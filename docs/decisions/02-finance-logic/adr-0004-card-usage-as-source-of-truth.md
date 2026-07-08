@@ -37,6 +37,6 @@
 
 ## 관련 문서
 
-- [요구사항 델타 — 계좌·카드·이체](../01-inception/02a-requirements-accounts-cards.md) FR-AC-04
-- [데이터 모델](../02-construction/02-data-model.md) Transaction.kind, TransferLink
+- [요구사항 델타 — 계좌·카드·이체](../../01-inception/02a-requirements-accounts-cards.md) FR-AC-04
+- [데이터 모델](../../02-construction/02-data-model.md) Transaction.kind, TransferLink
 - ADR-0005, ADR-0006

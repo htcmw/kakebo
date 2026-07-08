@@ -30,4 +30,4 @@
 - (→) 이 원칙은 ADR 인덱스(`decisions/README.md`) 등 모든 인덱스/뷰에 적용 — 뷰는 링크만, 내용은 정본에.
 
 ## 관련 문서
-- 문서 저장소 안내(`../00-overview/README.md`), [ADR 인덱스](README.md)
+- 문서 저장소 안내(`../../00-overview/README.md`), [ADR 인덱스](../README.md)

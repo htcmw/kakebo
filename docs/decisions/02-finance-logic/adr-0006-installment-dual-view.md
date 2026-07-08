@@ -41,8 +41,8 @@
 
 ## 관련 문서
 
-- [요구사항 델타](../01-inception/02a-requirements-accounts-cards.md) FR-TX-04
-- [데이터 모델](../02-construction/02-data-model.md) Installment
+- [요구사항 델타](../../01-inception/02a-requirements-accounts-cards.md) FR-TX-04
+- [데이터 모델](../../02-construction/02-data-model.md) Installment
 - ADR-0004
 
 ## 변경 이력

@@ -36,7 +36,7 @@ docs/
 
 ## 결정 로그 (ADR)
 
-결정은 카테고리·관계·적용 범위로 묶은 **[ADR 인덱스(결정 지도)](../decisions/README.md)** 에서 본다(관계도 포함). 카테고리: 제품·데이터수집 / 금융 로직 / 아키텍처·인증 / 기술 스택 / 개발 방식·문서. 정본은 각 `decisions/adr-XXXX-*.md`.
+결정은 `decisions/` 아래 **카테고리 폴더**로 구조화되어 있다(폴더 트리로 성격을 바로 확인). 폴더: `01-product-and-data` / `02-finance-logic` / `03-architecture-and-auth` / `04-tech-stack` / `05-process-and-docs`. 폴더 안내와 관계도는 **[decisions/README](../decisions/README.md)**, 정본은 각 폴더의 `adr-XXXX-*.md`.
 
 ## 관리 원칙 (요약)
 

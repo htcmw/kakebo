@@ -20,7 +20,7 @@ kakebo의 작업 방식으로 다음 셋을 **모두** 채택한다.
 2. **멀티 에이전트 오케스트레이션**: 범위가 분리되는 작업(docs/frontend/backend/검증)은 **역할별 서브에이전트**로 나눠 실행하고, 오케스트레이터(사람 또는 리드 에이전트)가 조율한다. 서브에이전트 정의는 `.claude/agents/`.
 3. **검증·평가 중심(verification/eval-driven)**: 모든 기능 요구사항의 **인수조건(FR Acceptance Criteria)** 을 검증 기준(테스트/체크)으로 연결하고, "완료" 전 검증 게이트를 통과한다. 스펙↔코드 드리프트를 감시한다.
 
-운영 상세는 [에이전틱 워크플로](../02-construction/06-agentic-workflow.md).
+운영 상세는 [에이전틱 워크플로](../../02-construction/06-agentic-workflow.md).
 
 ## 근거
 
@@ -37,6 +37,6 @@ kakebo의 작업 방식으로 다음 셋을 **모두** 채택한다.
 
 ## 관련 문서
 
-- [에이전틱 워크플로](../02-construction/06-agentic-workflow.md)
+- [에이전틱 워크플로](../../02-construction/06-agentic-workflow.md)
 - `../../AGENTS.md`, `../../.claude/agents/`
 - ADR-0003(문서 구조), 레포·스택 문서(05)

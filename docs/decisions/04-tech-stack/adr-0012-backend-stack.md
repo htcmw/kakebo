@@ -37,4 +37,4 @@
 - Phase 1(로컬 MVP) 완료 후 착수. 확정 시 Accepted로.
 
 ## 관련 문서
-- [아키텍처](../02-construction/01-architecture.md) Phase 2, ADR-0007/0008, ADR-0011(프론트엔드)
+- [아키텍처](../../02-construction/01-architecture.md) Phase 2, ADR-0007/0008, ADR-0011(프론트엔드)

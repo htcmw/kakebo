@@ -42,5 +42,5 @@
 ## 관련 문서
 
 - ADR-0001, ADR-0008
-- [아키텍처](../02-construction/01-architecture.md)
-- [데이터 모델](../02-construction/02-data-model.md)
+- [아키텍처](../../02-construction/01-architecture.md)
+- [데이터 모델](../../02-construction/02-data-model.md)

@@ -37,9 +37,9 @@
 
 - (+) 하나의 코드베이스로 모바일+웹, 로컬 우선 충족.
 - (−) RN/Expo 학습·네이티브 빌드 파이프라인 필요.
-- (→) 로컬 스키마를 [데이터 모델](../02-construction/02-data-model.md) 기반 SQLite DDL로 구체화.
+- (→) 로컬 스키마를 [데이터 모델](../../02-construction/02-data-model.md) 기반 SQLite DDL로 구체화.
 - (→) import 파서(인코딩·정규화·이체 판별)를 클라이언트 모듈로 구현.
 - 확정 시 Accepted로.
 
 ## 관련 문서
-- [레포·스택 문서](../02-construction/05-repo-and-stack-2026.md), ADR-0010(UI), ADR-0012(백엔드), ADR-0007/0008
+- [레포·스택 문서](../../02-construction/05-repo-and-stack-2026.md), ADR-0010(UI), ADR-0012(백엔드), ADR-0007/0008
