@@ -29,6 +29,9 @@ docs/
 | 이체 매칭 규칙 (내부/외부 판별) | `02-construction/03-transfer-matching.md` | 🟡 초안 |
 | UI 설계 | `02-construction/04-ui-design.md` | 🟡 초안 (목업 참조) |
 | 레포 구조·스택·2026 트렌드 | `02-construction/05-repo-and-stack-2026.md` | 🟡 초안 |
+| 에이전틱 개발 워크플로 | `02-construction/06-agentic-workflow.md` | 🟢 활성 규칙 |
+| 개발 프로세스 (정의) | `meta/development-process.md` | 🟢 활성 규칙 |
+| 개발 진행 이력 | `00-overview/development-log.md` | 🟢 유지 |
 | UI 목업 (인터랙티브) | `../designs/ui-mockup.html` | 🟢 P0 전 화면 |
 
 ## 결정 로그 (ADR)
@@ -43,6 +46,10 @@ docs/
 | 0006 | 카드 할부 — 두 관점(구매시점/월청구) 제공 | ✅ Accepted |
 | 0007 | 로컬 우선 데이터 관리, 서버는 백업(S3 단일 압축) | ✅ Accepted |
 | 0008 | 인증은 서버(백업/동기화) 사용 시에만 | ✅ Accepted |
+| 0009 | 에이전틱 개발 워크플로 채택(에이전틱·오케스트레이션·검증) | ✅ Accepted |
+| 0010 | UI 스택(디자인 시스템·스타일링) | 🟡 제안 |
+| 0011 | 프론트엔드 코어 스택 (Expo) | 🟡 제안 |
+| 0012 | 백엔드 스택 (Phase 2 · S3 백업) | 🟡 제안 |
 
 > 0001~0003의 본문은 기존 확정본(드라이브)에 있으며 이 레포에는 재작성하지 않았습니다. 0004~0008은 본 세션에서 신규 작성했습니다.
 
