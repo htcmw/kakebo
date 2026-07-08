@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>couplebudget — UI 목업 (P0)</title>
+<style>
+  :root{
+    --bg:#f4f6f8;
+    --surface:#ffffff;
+    --surface-2:#f8fafc;
+    --border:#e6eaef;
+    --border-strong:#d3dae2;
+    --text:#1b2733;
+    --text-2:#5a6b7b;
+    --text-3:#8a99a8;
+    --primary:#0d9488;      /* 공동/브랜드 */
+    --primary-dark:#0b7a70;
+    --primary-soft:#e3f4f1;
+    --a:#3b6ef6;            /* 멤버 A (지훈) */
+    --a-soft:#e7eefe;
+    --b:#e0568f;            /* 멤버 B (서연) */
+    --b-soft:#fce7f0;
+    --income:#0f9d58;
+    --expense:#e04b4b;
+    --warn:#e8a33d;
+    --warn-soft:#fcf1dd;
+    --danger:#dc2f45;
+    --radius:14px;
+    --radius-sm:9px;
+    --shadow:0 1px 2px rgba(16,32,48,.04),0 6px 20px rgba(16,32,48,.06);
+    --shadow-lg:0 12px 40px rgba(16,32,48,.16);
+    --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,select{font-family:inherit;font-size:14px}
+  a{color:inherit;text-decoration:none}
+  .tnum{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  /* ---------- App shell ---------- */
+  .app{display:none;min-height:100vh}
+  .app.active{display:grid;grid-template-columns:236px 1fr}
+
+  /* Sidebar */
+  .sidebar{background:#0f172a;color:#c7d2de;display:flex;flex-direction:column;padding:20px 14px;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 18px}
+  .brand .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--primary),#14b8a6);display:grid;place-items:center;color:#fff;font-weight:800;font-size:17px}
+  .brand .name{font-weight:700;color:#fff;font-size:15px;letter-spacing:-.02em}
+  .brand .tag{font-size:11px;color:#7c8ba0}
+  .nav{display:flex;flex-direction:column;gap:3px;margin-top:6px}
+  .nav .label{font-size:11px;color:#64748b;padding:14px 10px 6px;letter-spacing:.04em;text-transform:uppercase}
+  .nav button{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;color:#c7d2de;font-size:13.5px;font-weight:500;width:100%;text-align:left;transition:.14s}
+  .nav button:hover{background:#1e293b;color:#fff}
+  .nav button.active{background:var(--primary);color:#fff}
+  .nav button .ic{width:18px;height:18px;flex:none}
+  .sidebar .foot{margin-top:auto;border-top:1px solid #1e293b;padding-top:12px}
+  .hh-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:#1e293b}
+  .hh-card .avs{display:flex}
+  .hh-card .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;border:2px solid #1e293b}
+  .hh-card .av:nth-child(2){margin-left:-9px}
+  .hh-card .txt{font-size:12px}
+  .hh-card .txt b{display:block;color:#fff;font-size:12.5px}
+  .hh-card .txt span{color:#8496a8}
+
+  /* Main */
+  .main{min-width:0;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  .topbar{display:flex;align-items:center;gap:16px;padding:16px 28px;background:var(--surface);border-bottom:1px solid var(--border);flex:none}
+  .topbar h1{font-size:19px;font-weight:700;letter-spacing:-.02em}
+  .topbar .sub{color:var(--text-3);font-size:12.5px;margin-top:1px}
+  .spacer{flex:1}
+  .month-picker{display:flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:3px}
+  .month-picker button{padding:6px 9px;border-radius:7px;color:var(--text-2)}
+  .month-picker button:hover{background:#eef1f4}
+  .month-picker .cur{font-weight:700;padding:6px 6px;min-width:96px;text-align:center;font-size:13.5px}
+  .content{padding:24px 28px 60px;overflow-y:auto}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:10px;font-weight:600;font-size:13.5px;transition:.14s;border:1px solid transparent}
+  .btn .ic{width:16px;height:16px}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-dark)}
+  .btn-ghost{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
+  .btn-ghost:hover{background:var(--surface-2);border-color:var(--text-3)}
+  .btn-sm{padding:6px 11px;font-size:12.5px;border-radius:8px}
+  .btn-danger{background:#fff;border-color:#f2c2c2;color:var(--danger)}
+  .btn-danger:hover{background:#fdf2f2}
+
+  /* Cards & grid */
+  .grid{display:grid;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card-pad{padding:18px 20px}
+  .card-h{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+  .card-h h3{font-size:14.5px;font-weight:700}
+  .card-h .muted{font-size:12px;color:var(--text-3)}
+
+  /* Stat cards */
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .stat{padding:18px 20px}
+  .stat .k{font-size:12.5px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+  .stat .v{font-size:26px;font-weight:800;margin-top:8px;letter-spacing:-.02em}
+  .stat .d{font-size:12px;margin-top:6px;color:var(--text-3)}
+  .stat .d b{color:var(--income)}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  /* Split (shared/personal) */
+  .split{grid-template-columns:1.15fr 1fr}
+  .splitrow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+  .splitrow:last-child{border-bottom:none}
+  .splitrow .who{display:flex;align-items:center;gap:10px;font-weight:600}
+  .av-sm{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff}
+  .bar-track{height:8px;border-radius:6px;background:#eef1f4;overflow:hidden;margin-top:9px}
+  .bar-fill{height:100%;border-radius:6px}
+
+  /* Category rows */
+  .catrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .catrow:last-child{border:none}
+  .catrow .ci{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:16px;flex:none}
+  .catrow .cname{font-weight:600;flex:none;width:88px}
+  .catrow .ctrack{flex:1;height:8px;border-radius:6px;background:#eef1f4;overflow:hidden}
+  .catrow .cval{font-weight:700;width:96px;text-align:right}
+  .catrow .cpct{width:44px;text-align:right;color:var(--text-3);font-size:12.5px}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font-size:11.5px;color:var(--text-3);font-weight:600;padding:10px 14px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+  tbody td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle}
+  tbody tr:hover{background:var(--surface-2)}
+  td.amt{text-align:right;font-weight:700}
+  .tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+  .tag-shared{background:var(--primary-soft);color:var(--primary-dark)}
+  .tag-a{background:var(--a-soft);color:var(--a)}
+  .tag-b{background:var(--b-soft);color:var(--b)}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font-size:12.5px;font-weight:600}
+  .catchip{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+  .catchip .emo{font-size:14px}
+
+  /* Filter bar */
+  .filterbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+  .search{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;padding:9px 13px}
+  .search input{border:none;outline:none;flex:1;background:none;color:var(--text)}
+  .selbox{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--text-2)}
+  .selbox select{border:none;outline:none;background:none;font-weight:600;color:var(--text)}
+  .seg{display:flex;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;overflow:hidden}
+  .seg button{padding:8px 13px;font-size:13px;font-weight:600;color:var(--text-2)}
+  .seg button.active{background:var(--primary);color:#fff}
+
+  /* Import stepper */
+  .stepper{display:flex;align-items:center;gap:0;margin-bottom:24px;max-width:760px}
+  .step{display:flex;align-items:center;gap:10px;flex:1}
+  .step .num{width:30px;height:30px;border-radius:50%;background:var(--surface);border:2px solid var(--border-strong);display:grid;place-items:center;font-weight:700;font-size:13px;color:var(--text-3);flex:none}
+  .step .stxt{font-size:12.5px;font-weight:600;color:var(--text-3)}
+  .step .line{flex:1;height:2px;background:var(--border-strong);margin:0 6px}
+  .step.done .num{background:var(--primary);border-color:var(--primary);color:#fff}
+  .step.done .stxt{color:var(--text)}
+  .step.active .num{background:#fff;border-color:var(--primary);color:var(--primary)}
+  .step.active .stxt{color:var(--primary)}
+
+  .dropzone{border:2px dashed var(--border-strong);border-radius:16px;padding:44px;text-align:center;background:var(--surface-2);transition:.15s}
+  .dropzone:hover{border-color:var(--primary);background:var(--primary-soft)}
+  .dropzone .big{width:56px;height:56px;border-radius:14px;background:var(--primary-soft);display:grid;place-items:center;margin:0 auto 14px}
+  .filechip{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+  .filechip .fi{width:38px;height:38px;border-radius:9px;background:var(--primary-soft);display:grid;place-items:center;flex:none}
+
+  .detbox{display:flex;gap:10px;align-items:center;padding:12px 15px;border-radius:11px;font-size:13px}
+  .detbox.ok{background:var(--primary-soft);color:var(--primary-dark)}
+  .detbox.info{background:var(--a-soft);color:var(--a)}
+
+  /* Import summary badges */
+  .impsum{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .impsum .b{border:1px solid var(--border);border-radius:12px;padding:16px 18px;text-align:center}
+  .impsum .b .n{font-size:28px;font-weight:800}
+  .impsum .b .l{font-size:12.5px;color:var(--text-2);margin-top:2px}
+  .impsum .b.new{background:#effaf3}.impsum .b.new .n{color:var(--income)}
+  .impsum .b.dup{background:var(--warn-soft)}.impsum .b.dup .n{color:var(--warn)}
+  .impsum .b.err{background:#fdf2f2}.impsum .b.err .n{color:var(--danger)}
+
+  /* Budget rows */
+  .budrow{padding:15px 0;border-bottom:1px solid var(--border)}
+  .budrow:last-child{border:none}
+  .budrow .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+  .budrow .amt-s{font-size:13px;color:var(--text-2)}
+  .budrow .amt-s b{color:var(--text)}
+
+  /* Categories management */
+  .catgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .cattile{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+  .cattile .ci{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:19px;flex:none}
+  .cattile .meta b{font-size:13.5px}
+  .cattile .meta span{font-size:12px;color:var(--text-3)}
+  .cattile .act{margin-left:auto;color:var(--text-3);display:flex;gap:4px}
+  .cattile .act button{padding:5px;border-radius:7px}
+  .cattile .act button:hover{background:var(--surface-2);color:var(--text)}
+  .rule{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);font-size:13.5px}
+  .rule:last-child{border:none}
+  .rule .arrow{color:var(--text-3)}
+
+  /* Settings / invite */
+  .memberrow{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+  .memberrow:last-child{border:none}
+  .invite-box{display:flex;gap:8px;align-items:center;background:var(--surface-2);border:1px dashed var(--border-strong);border-radius:11px;padding:11px 14px}
+  .invite-box code{flex:1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* Login */
+  #screen-login{display:none;min-height:100vh;place-items:center;background:radial-gradient(1200px 600px at 50% -10%,#0f766e0d,transparent),var(--bg)}
+  #screen-login.active{display:grid}
+  .login-card{width:400px;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-lg);padding:38px 34px;text-align:center}
+  .login-card .logo{width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,var(--primary),#14b8a6);display:grid;place-items:center;color:#fff;font-weight:800;font-size:26px;margin:0 auto 18px}
+  .login-card h2{font-size:21px;letter-spacing:-.02em}
+  .login-card p{color:var(--text-2);font-size:13.5px;margin-top:7px;margin-bottom:24px}
+  .field{text-align:left;margin-bottom:14px}
+  .field label{font-size:12.5px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px}
+  .field input{width:100%;padding:12px 14px;border:1px solid var(--border-strong);border-radius:11px;outline:none}
+  .field input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+  .btn-block{width:100%;justify-content:center;padding:13px}
+  .magic-note{margin-top:16px;font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px;justify-content:center}
+  .sent{background:var(--primary-soft);color:var(--primary-dark);border-radius:11px;padding:14px;font-size:13px;font-weight:600;margin-top:6px;display:none}
+  .sent.show{display:block}
+
+  /* Modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(16,26,38,.44);display:none;place-items:center;z-index:50;padding:20px}
+  .modal-bg.show{display:grid}
+  .modal{width:440px;max-width:100%;background:var(--surface);border-radius:18px;box-shadow:var(--shadow-lg);overflow:hidden;animation:pop .16s ease}
+  @keyframes pop{from{transform:translateY(8px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+  .modal-h{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+  .modal-h h3{font-size:16px}
+  .modal-b{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+  .modal-f{padding:16px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:9px}
+  .x{padding:6px;border-radius:8px;color:var(--text-3)}.x:hover{background:var(--surface-2)}
+  .toggle-shared{display:flex;gap:8px}
+  .toggle-shared button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border-strong);font-weight:600;font-size:13px;color:var(--text-2)}
+  .toggle-shared button.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark)}
+
+  .hint{font-size:12px;color:var(--text-3);display:flex;gap:6px;align-items:flex-start;margin-top:2px}
+  .frtag{font-size:10.5px;color:var(--text-3);border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-weight:600}
+  .sectiontitle{display:flex;align-items:center;gap:9px;margin:26px 0 13px;font-size:13px;font-weight:700;color:var(--text-2)}
+  .sectiontitle::after{content:"";flex:1;height:1px;background:var(--border)}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="screen-login" class="active">
+  <div class="login-card">
+    <div class="logo">₩</div>
+    <h2>couplebudget</h2>
+    <p>둘이 함께 보는 우리집 가계부 <span class="frtag">FR-AU-01</span></p>
+    <div id="loginForm">
+      <div class="field">
+        <label>이메일</label>
+        <input id="email" type="email" placeholder="you@example.com" value="jihoon@example.com">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="sendMagic()">
+        매직링크 받기
+      </button>
+    </div>
+    <div id="sentMsg" class="sent">
+      ✉️ jihoon@example.com 로 로그인 링크를 보냈어요.<br>메일의 링크를 누르면 바로 로그인됩니다.
+      <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="enterApp()" style="width:100%;justify-content:center">데모: 링크 클릭했다 치고 입장 →</button></div>
+    </div>
+    <div class="magic-note">🔒 비밀번호 없이 안전하게 · 금융 정보는 저장하지 않아요</div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">₩</div>
+      <div>
+        <div class="name">couplebudget</div>
+        <div class="tag">우리집 가계</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="label">메뉴</div>
+      <button data-nav="dashboard" class="active" onclick="go('dashboard')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        대시보드
+      </button>
+      <button data-nav="transactions" onclick="go('transactions')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></svg>
+        거래 내역
+      </button>
+      <button data-nav="import" onclick="go('import')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3M12 15l-4-4M12 15l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        가져오기
+      </button>
+      <button data-nav="categories" onclick="go('categories')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a1 1 0 011-1h5l2 2h7a1 1 0 011 1v3H4z"/><path d="M4 10h17v8a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg>
+        카테고리
+      </button>
+      <button data-nav="budget" onclick="go('budget')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        예산
+      </button>
+      <button data-nav="accounts" onclick="go('accounts')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg>
+        계좌 · 카드
+      </button>
+      <div class="label">가계</div>
+      <button data-nav="settings" onclick="go('settings')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5M14.5 18.6c.2-2 1.6-3.4 3.5-3.4 1.4 0 2.6.7 3.3 1.8"/></svg>
+        가계 · 멤버
+      </button>
+    </nav>
+    <div class="foot">
+      <div class="hh-card">
+        <div class="avs">
+          <div class="av" style="background:var(--a)">지</div>
+          <div class="av" style="background:var(--b)">서</div>
+        </div>
+        <div class="txt">
+          <b>지훈 · 서연</b>
+          <span>2인 가계</span>
+        </div>
+      </div>
+      <button class="nav" style="width:100%;display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;color:#8496a8;font-size:13px;margin-top:6px" onclick="logout()">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 12H3M10 12l3-3M10 12l3 3"/></svg>
+        로그아웃
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">대시보드</h1>
+        <div class="sub" id="pageSub">2026년 7월 · 우리집 가계 합산</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="month-picker">
+        <button>‹</button>
+        <div class="cur">2026년 7월</div>
+        <button>›</button>
+      </div>
+      <button class="btn btn-primary" onclick="go('import')">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3M12 15l-4-4M12 15l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        내역 가져오기
+      </button>
+    </div>
+
+    <div class="content" id="content"><!-- screens injected --></div>
+  </div>
+</div>
+
+<!-- Modal host -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()"></div>
+
+<script>
+/* ---------------- sample data ---------------- */
+const KRW = n => (n<0?'-':'')+'₩'+Math.abs(n).toLocaleString('ko-KR');
+const CATS = {
+  food:{emo:'🍚',name:'식비',color:'#f0806c',bg:'#fdeee9'},
+  cafe:{emo:'☕',name:'카페·간식',color:'#b98a4e',bg:'#f7efe2'},
+  house:{emo:'🏠',name:'주거·통신',color:'#5b8def',bg:'#e9f0fe'},
+  mart:{emo:'🛒',name:'생활·마트',color:'#41b37d',bg:'#e6f6ee'},
+  trans:{emo:'🚇',name:'교통',color:'#6b7cf0',bg:'#eceffd'},
+  health:{emo:'💊',name:'의료·건강',color:'#e07aa8',bg:'#fceaf3'},
+  culture:{emo:'🎬',name:'문화·여가',color:'#9b6ef0',bg:'#f0eafd'},
+  income:{emo:'💰',name:'수입',color:'#0f9d58',bg:'#e6f6ee'},
+};
+const TX = [
+  {d:'07.05',merc:'스타벅스 강남점',cat:'cafe',amt:-6800,tag:'a',src:'현대카드',type:'exp'},
+  {d:'07.05',merc:'쿠팡',cat:'mart',amt:-38400,tag:'shared',src:'현대카드',type:'exp'},
+  {d:'07.05',merc:'현대카드 대금 결제',cat:null,amt:-642000,tag:'none',src:'신한은행',type:'transfer',from:'신한 주거래',to:'현대카드 M'},
+  {d:'07.04',merc:'GS25 역삼',cat:'food',amt:-12300,tag:'b',src:'국민카드',type:'exp'},
+  {d:'07.04',merc:'서울시 상수도',cat:'house',amt:-24500,tag:'shared',src:'신한은행',type:'exp'},
+  {d:'07.03',merc:'CGV 왕십리',cat:'culture',amt:-28000,tag:'shared',src:'현대카드',type:'exp'},
+  {d:'07.03',merc:'카카오T 택시',cat:'trans',amt:-9700,tag:'a',src:'현대카드',type:'exp'},
+  {d:'07.03',merc:'공동통장 이체 (서연)',cat:null,amt:-500000,tag:'none',src:'국민은행',type:'transfer',from:'국민 급여',to:'카카오뱅크 공동'},
+  {d:'07.02',merc:'이마트 성수',cat:'mart',amt:-64200,tag:'shared',src:'국민카드',type:'exp'},
+  {d:'07.02',merc:'삼성 갤럭시탭',cat:'culture',amt:-600000,tag:'a',src:'현대카드',type:'exp',inst:{months:3,seq:1,per:200000}},
+  {d:'07.02',merc:'약국',cat:'health',amt:-8400,tag:'b',src:'국민카드',type:'exp'},
+  {d:'07.01',merc:'(주)테크컴퍼니 급여',cat:'income',amt:3200000,tag:'a',src:'신한은행',type:'inc'},
+  {d:'07.01',merc:'배달의민족',cat:'food',amt:-27500,tag:'shared',src:'현대카드',type:'exp'},
+  {d:'07.01',merc:'넷플릭스',cat:'culture',amt:-13500,tag:'shared',src:'현대카드',type:'exp'},
+  {d:'07.01',merc:'디자인스튜디오 급여',cat:'income',amt:2600000,tag:'b',src:'국민은행',type:'inc'},
+];
+const CATSUM = [
+  {cat:'food',val:312000,pct:26},
+  {cat:'mart',val:268000,pct:22},
+  {cat:'house',val:198000,pct:16},
+  {cat:'culture',val:142000,pct:12},
+  {cat:'cafe',val:96000,pct:8},
+  {cat:'trans',val:88000,pct:7},
+  {cat:'health',val:64000,pct:5},
+];
+const BUDGET = [
+  {cat:'food',spent:312000,limit:400000},
+  {cat:'mart',spent:268000,limit:250000},
+  {cat:'house',spent:198000,limit:220000},
+  {cat:'culture',spent:142000,limit:120000},
+  {cat:'cafe',spent:96000,limit:100000},
+  {cat:'trans',spent:88000,limit:100000},
+];
+const RULES = [
+  {kw:'스타벅스',cat:'cafe'},{kw:'배달의민족',cat:'food'},{kw:'카카오T',cat:'trans'},
+  {kw:'넷플릭스',cat:'culture'},{kw:'이마트',cat:'mart'},{kw:'상수도',cat:'house'},
+];
+const ACCOUNTS = [
+  {name:'신한 주거래',bank:'신한은행',num:'110-***-4521',bal:4820000,owner:'a'},
+  {name:'국민 급여',bank:'국민은행',num:'624-***-1130',bal:3110000,owner:'b'},
+  {name:'카카오뱅크 공동',bank:'카카오뱅크',num:'3333-**-9902',bal:1250000,owner:'shared'},
+];
+const CARDS = [
+  {name:'현대카드 M',owner:'a',settle:'신한 주거래',billing:642000,due:'07.25'},
+  {name:'국민 굿데이',owner:'b',settle:'국민 급여',billing:410000,due:'07.14'},
+];
+
+/* ---------------- login ---------------- */
+function sendMagic(){document.getElementById('loginForm').style.display='none';document.getElementById('sentMsg').classList.add('show');}
+function enterApp(){document.getElementById('screen-login').classList.remove('active');document.getElementById('app').classList.add('active');go('dashboard');}
+function logout(){document.getElementById('app').classList.remove('active');document.getElementById('screen-login').classList.add('active');document.getElementById('loginForm').style.display='block';document.getElementById('sentMsg').classList.remove('show');}
+
+/* ---------------- nav ---------------- */
+const TITLES={dashboard:['대시보드','2026년 7월 · 우리집 가계 합산'],transactions:['거래 내역','전체 거래 · 두 사람 합산'],import:['내역 가져오기','은행·카드 파일을 올려 자동 정리'],categories:['카테고리','지출 분류와 자동 분류 규칙'],budget:['예산','카테고리별 월 예산 대비 실적'],accounts:['계좌 · 카드','계좌·카드 잔액과 이체·결제 관리'],settings:['가계 · 멤버','우리 가계 구성과 초대']};
+function go(screen){
+  document.querySelectorAll('.nav button[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===screen));
+  document.getElementById('pageTitle').textContent=TITLES[screen][0];
+  document.getElementById('pageSub').textContent=TITLES[screen][1];
+  document.getElementById('content').innerHTML=SCREENS[screen]();
+  document.getElementById('content').scrollTop=0;
+  if(screen==='import')importStep=1;
+}
+
+/* ---------------- helpers ---------------- */
+const tagChip=t=>t==='shared'?'<span class="tag tag-shared">● 공동</span>':t==='a'?'<span class="tag tag-a">지훈</span>':t==='b'?'<span class="tag tag-b">서연</span>':'<span class="tag" style="background:#eef1f4;color:var(--text-3)">—</span>';
+const catChip=c=>`<span class="catchip"><span class="emo">${CATS[c].emo}</span>${CATS[c].name}</span>`;
+
+/* ---------------- screens ---------------- */
+const SCREENS={};
+
+SCREENS.dashboard=()=>{
+  const income=5800000,expense=1198000,net=income-expense;
+  const catRows=CATSUM.map(r=>`
+    <div class="catrow">
+      <div class="ci" style="background:${CATS[r.cat].bg}">${CATS[r.cat].emo}</div>
+      <div class="cname">${CATS[r.cat].name}</div>
+      <div class="ctrack"><div style="height:100%;width:${r.pct*3.4}%;background:${CATS[r.cat].color};border-radius:6px"></div></div>
+      <div class="cval tnum">${KRW(-r.val).replace('-','')}</div>
+      <div class="cpct tnum">${r.pct}%</div>
+    </div>`).join('');
+  const trend=[[820,760],[910,880],[1040,690],[760,1180],[980,720],[1198,0]];
+  const maxT=1300;
+  const bars=['2월','3월','4월','5월','6월','7월'].map((m,i)=>{
+    const e=trend[i][0];
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="display:flex;align-items:flex-end;gap:3px;height:120px">
+        <div style="width:14px;height:${e/maxT*120}px;background:var(--expense);border-radius:4px 4px 0 0;opacity:${i===5?1:.55}"></div>
+      </div>
+      <span style="font-size:11px;color:var(--text-3)">${m}</span></div>`;
+  }).join('');
+  const acctMini=ACCOUNTS.map(a=>`
+    <div class="card card-pad">
+      <div style="display:flex;align-items:center;gap:9px">
+        <span class="av-sm" style="background:${a.owner==='a'?'var(--a)':a.owner==='b'?'var(--b)':'var(--primary)'}">${a.owner==='a'?'지':a.owner==='b'?'서':'공'}</span>
+        <div><b style="font-size:13.5px">${a.name}</b><div style="font-size:11.5px;color:var(--text-3)">${a.bank} ${a.num}</div></div>
+      </div>
+      <div class="tnum" style="font-size:20px;font-weight:800;margin-top:10px">${KRW(a.bal)}</div>
+    </div>`).join('');
+  return `
+  <div class="grid stats">
+    <div class="card stat">
+      <div class="k"><span class="dot" style="background:var(--income)"></span>이번 달 수입</div>
+      <div class="v tnum" style="color:var(--income)">${KRW(income)}</div>
+      <div class="d">지훈 ₩3,200,000 · 서연 ₩2,600,000</div>
+    </div>
+    <div class="card stat">
+      <div class="k"><span class="dot" style="background:var(--expense)"></span>이번 달 지출</div>
+      <div class="v tnum" style="color:var(--expense)">${KRW(expense)}</div>
+      <div class="d">지난달 대비 <b style="color:var(--income)">▼ 8.2%</b></div>
+    </div>
+    <div class="card stat">
+      <div class="k"><span class="dot" style="background:var(--primary)"></span>순액 (수입−지출)</div>
+      <div class="v tnum" style="color:var(--primary)">${KRW(net)}</div>
+      <div class="d">이번 달 저축 여력</div>
+    </div>
+  </div>
+
+  <div class="detbox info" style="margin-top:14px;background:#eef1f4;color:var(--text-2)">⇄ 이번 달 <b>이체·카드대금 ₩1,142,000</b>은 계좌·카드 사이 내부 이동이라 수입·지출 집계에서 제외했어요. <span class="frtag" style="margin-left:auto">FR-AC-04</span></div>
+
+  <div class="sectiontitle">합산 · 분담 <span class="frtag">FR-SH-02 · FR-DB-01</span></div>
+  <div class="grid split">
+    <div class="card">
+      <div class="card-h"><h3>공동 / 개인 지출 분담</h3><span class="muted">이번 달</span></div>
+      <div class="card-pad" style="padding-top:6px">
+        <div class="splitrow">
+          <div class="who"><span class="av-sm" style="background:var(--primary)">공</span>공동 지출</div>
+          <div class="tnum" style="font-weight:800">${KRW(-642000).replace('-','')}</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:54%;background:var(--primary)"></div></div>
+        <div class="splitrow" style="margin-top:8px">
+          <div class="who"><span class="av-sm" style="background:var(--a)">지</span>지훈 개인</div>
+          <div class="tnum" style="font-weight:800">${KRW(-286000).replace('-','')}</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:24%;background:var(--a)"></div></div>
+        <div class="splitrow" style="margin-top:8px">
+          <div class="who"><span class="av-sm" style="background:var(--b)">서</span>서연 개인</div>
+          <div class="tnum" style="font-weight:800">${KRW(-270000).replace('-','')}</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--b)"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>월별 지출 추이</h3><span class="muted">FR-DB-03</span></div>
+      <div class="card-pad">
+        <div style="display:flex;align-items:flex-end;gap:6px;padding-top:6px">${bars}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sectiontitle">카테고리별 지출 <span class="frtag">FR-DB-02</span></div>
+  <div class="card card-pad">${catRows}</div>
+
+  <div class="sectiontitle">계좌 잔액 <span class="frtag">FR-AC-01</span></div>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr)">${acctMini}</div>`;
+};
+
+let txView='purchase'; // 'purchase' | 'billing'
+function setTxView(v){txView=v;go('transactions');}
+SCREENS.transactions=()=>{
+  const rows=TX.map((t,i)=>{
+    const isT=t.type==='transfer';
+    const isInst=!!t.inst;
+    const showAmt=isInst&&txView==='billing'?-t.inst.per:t.amt;
+    const catCell=isT?'<span class="catchip"><span class="emo">⇄</span>이체</span>':catChip(t.cat);
+    const tagCell=isT?`<span class="tag" style="background:#eef1f4;color:var(--text-2)">${t.from} → ${t.to}</span>`:tagChip(t.tag);
+    const amtColor=t.type==='inc'?'var(--income)':isT?'var(--text-3)':'var(--text)';
+    let instBadge='';
+    if(isInst) instBadge = txView==='billing'
+      ? ` <span class="tag" style="background:var(--warn-soft);color:var(--warn)">할부 ${t.inst.seq}/${t.inst.months}회</span>`
+      : ` <span class="tag" style="background:var(--warn-soft);color:var(--warn)">${t.inst.months}개월 할부</span>`;
+    return `<tr>
+      <td style="width:34px"><input type="checkbox" onclick="event.stopPropagation()"></td>
+      <td class="tnum" style="color:var(--text-3);white-space:nowrap">${t.d}</td>
+      <td><b>${t.merc}</b>${isT?' <span class="frtag" style="color:var(--text-3)">지출 제외</span>':''}${instBadge}</td>
+      <td>${catCell}</td>
+      <td>${tagCell}</td>
+      <td><span class="pill">${t.src}</span></td>
+      <td class="amt tnum" style="color:${amtColor}">${t.type==='inc'?'+':''}${KRW(showAmt)}${isInst&&txView==='billing'?'<div style="font-size:10.5px;color:var(--text-3);font-weight:500">총 '+KRW(t.amt).replace('-','')+'</div>':''}</td>
+      <td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="openTxModal(${i})">편집</button></td>
+    </tr>`;}).join('');
+  const monthExp = txView==='billing' ? 798000 : 1198000; // 할부 관점에 따라 이번달 지출 변동
+  return `
+  <div class="filterbar">
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input placeholder="적요·가맹점 검색 (예: 스타벅스)">
+    </div>
+    <div class="selbox">기간 <select><option>2026년 7월</option><option>최근 3개월</option><option>올해</option></select></div>
+    <div class="seg">
+      <button class="active">전체</button><button>공동</button><button>지훈</button><button>서연</button><button>이체</button>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="openTxModal(-1)">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> 거래 추가
+    </button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12.5px;color:var(--text-2);font-weight:600">할부 지출 기준</span>
+      <div class="seg">
+        <button class="${txView==='purchase'?'active':''}" onclick="setTxView('purchase')">구매 시점</button>
+        <button class="${txView==='billing'?'active':''}" onclick="setTxView('billing')">월 청구</button>
+      </div>
+    </div>
+    <span style="font-size:12px;color:var(--text-3)">${txView==='purchase'?'할부 구매를 산 달에 전액 집계':'할부를 이번 달 청구분만 집계 (실제 카드대금 기준)'} <span class="frtag">FR-TX-04</span></span>
+    <div class="spacer" style="flex:1"></div>
+    <button class="btn btn-ghost btn-sm" onclick="openTransferTools()">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10h11l-3-3M17 14H6l3 3"/></svg> 이체 관리
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <h3>거래 내역 <span style="color:var(--text-3);font-weight:500">· 15건 · 이체 2건 지출 제외</span></h3>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="muted">이번 달 지출 <b class="tnum" style="color:var(--text)">${KRW(-monthExp).replace('-','')}</b></span>
+        <span class="muted">FR-TX · FR-AC-04</span>
+      </div>
+    </div>
+    <div id="bulkbar" style="display:none;align-items:center;gap:10px;padding:10px 20px;background:var(--primary-soft);border-bottom:1px solid var(--border)">
+      <b style="font-size:13px;color:var(--primary-dark)">선택한 거래</b>
+      <button class="btn btn-primary btn-sm" onclick="alert('선택 거래를 이체로 표시했어요 (지출 집계 제외)')">⇄ 이체로 표시</button>
+      <button class="btn btn-ghost btn-sm">카테고리 변경</button>
+      <button class="btn btn-ghost btn-sm">공동/개인 변경</button>
+    </div>
+    <table>
+      <thead><tr><th style="width:34px"><input type="checkbox" onclick="document.getElementById('bulkbar').style.display=this.checked?'flex':'none'"></th><th>날짜</th><th>적요</th><th>카테고리</th><th>구분</th><th>출처</th><th style="text-align:right">금액</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+};
+
+/* ---------- Import (multi-step) ---------- */
+let importStep=1;
+SCREENS.import=()=>importRender();
+function importRender(){
+  const steps=['파일 업로드','기관·인코딩 인식','매핑 미리보기','확정'];
+  const stepper=`<div class="stepper">${steps.map((s,i)=>{
+    const n=i+1;const cls=n<importStep?'done':n===importStep?'active':'';
+    return `<div class="step ${cls}">
+      <div class="num">${n<importStep?'✓':n}</div><div class="stxt">${s}</div>
+      ${i<3?'<div class="line"></div>':''}</div>`;}).join('')}</div>`;
+  let body='';
+  if(importStep===1){
+    body=`
+    <div class="card card-pad">
+      <div class="dropzone" onclick="importStep=2;rerenderImport()">
+        <div class="big"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 16V4M12 4l-5 5M12 4l5 5"/><path d="M4 18v1a2 2 0 002 2h12a2 2 0 002-2v-1"/></svg></div>
+        <div style="font-weight:700;font-size:15px">파일을 여기로 끌어다 놓으세요</div>
+        <div style="color:var(--text-2);margin-top:5px">또는 클릭해서 선택 · CSV, XLS, XLSX <span class="frtag">FR-IM-01</span></div>
+        <div style="margin-top:14px"><span class="btn btn-primary">파일 선택</span></div>
+      </div>
+      <div class="hint" style="margin-top:14px">🔒 은행·카드사 로그인 정보는 절대 입력하지 않아요. 직접 내려받은 <b>거래내역 파일</b>만 올리면 됩니다. (최대 10MB)</div>
+    </div>`;
+  }else if(importStep===2){
+    body=`
+    <div class="card card-pad" style="display:flex;flex-direction:column;gap:16px">
+      <div class="filechip">
+        <div class="fi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M6 2h9l5 5v13a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M14 2v6h6"/></svg></div>
+        <div style="flex:1"><b>현대카드_이용대금명세_202607.csv</b><div style="font-size:12px;color:var(--text-3)">248 KB · 68행</div></div>
+        <button class="x" onclick="importStep=1;rerenderImport()">✕</button>
+      </div>
+      <div class="detbox ok">✅ <b>기관 자동 인식:</b> 현대카드 &nbsp;·&nbsp; 매핑 프로파일 적용됨 <span class="frtag" style="margin-left:auto">FR-IM-03</span></div>
+      <div class="detbox info">🔤 <b>인코딩 감지:</b> CP949(EUC-KR) → UTF-8 변환 · 한글 정상 <span class="frtag" style="margin-left:auto">FR-IM-02</span></div>
+      <div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--text-2);margin-bottom:8px">컬럼 매핑</div>
+        <table style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+          <thead><tr><th>파일 컬럼</th><th></th><th>앱 필드</th></tr></thead>
+          <tbody>
+            <tr><td>이용일자</td><td style="color:var(--text-3)">→</td><td><b>날짜</b></td></tr>
+            <tr><td>이용가맹점</td><td style="color:var(--text-3)">→</td><td><b>적요</b></td></tr>
+            <tr><td>이용금액</td><td style="color:var(--text-3)">→</td><td><b>금액 (출금 −)</b></td></tr>
+            <tr><td>이용구분</td><td style="color:var(--text-3)">→</td><td><select style="border:1px solid var(--border-strong);border-radius:7px;padding:5px 8px"><option>무시</option><option>메모</option></select> <span style="color:var(--warn);font-size:12px">⚠ 수동 매핑</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:9px">
+        <button class="btn btn-ghost" onclick="importStep=1;rerenderImport()">이전</button>
+        <button class="btn btn-primary" onclick="importStep=3;rerenderImport()">미리보기 →</button>
+      </div>
+    </div>`;
+  }else if(importStep===3){
+    const prevRows=[
+      ['07.05','스타벅스 강남점','cafe',-6800,'new'],
+      ['07.05','쿠팡','mart',-38400,'new'],
+      ['07.05','전월 카드대금 자동이체','xfer',-611000,'xfer'],
+      ['07.04','배달의민족','food',-27500,'dup'],
+      ['07.03','CGV 왕십리','culture',-28000,'new'],
+      ['07.02','GS25 역삼','food',-12300,'err'],
+    ];
+    const badge=s=>({new:'<span class="tag" style="background:#e6f6ee;color:var(--income)">신규</span>',dup:'<span class="tag" style="background:var(--warn-soft);color:var(--warn)">중복</span>',err:'<span class="tag" style="background:#fdf2f2;color:var(--danger)">오류</span>',xfer:'<span class="tag" style="background:#eef1f4;color:var(--text-2)">이체·제외</span>'}[s]);
+    const rows=prevRows.map(r=>{
+      const isX=r[4]==='xfer';
+      const catCell=isX?'<span class="catchip"><span class="emo">⇄</span>이체</span>':catChip(r[2]);
+      return `<tr>
+      <td class="tnum" style="color:var(--text-3)">${r[0]}</td>
+      <td><b>${r[1]}</b></td><td>${catCell}</td>
+      <td>${isX?'<span class="tag" style="background:#eef1f4;color:var(--text-3)">—</span>':tagChip('a')}</td>
+      <td class="amt tnum" style="color:${isX?'var(--text-3)':'var(--text)'}">${KRW(r[3])}</td>
+      <td>${badge(r[4])}</td></tr>`;}).join('');
+    body=`
+    <div class="card card-pad" style="margin-bottom:16px">
+      <div class="impsum">
+        <div class="b new"><div class="n tnum">61</div><div class="l">신규 거래</div></div>
+        <div class="b dup"><div class="n tnum">5</div><div class="l">중복 (자동 제외)</div></div>
+        <div class="b err"><div class="n tnum">2</div><div class="l">오류 (검토 필요)</div></div>
+      </div>
+      <div class="detbox info" style="margin-top:14px;background:#eef1f4;color:var(--text-2)">⇄ '카드대금 자동이체'로 보이는 <b>1건</b>은 계좌 간 내부 이동이라 <b>이체</b>로 자동 분류해 지출에서 제외했어요. <span class="frtag" style="margin-left:auto">FR-AC-04</span></div>
+      <div class="hint" style="margin-top:12px">중복 판정 기준: <b>날짜 + 금액 + 적요 + 출처</b> · 가져온 지출은 기본적으로 <b>지훈 개인</b>으로 태깅됩니다(변경 가능). <span class="frtag">FR-IM-04 · 결정 A</span></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>미리보기</h3><span class="muted">FR-IM-05 · 확정 전엔 저장되지 않아요</span></div>
+      <table>
+        <thead><tr><th>날짜</th><th>적요</th><th>카테고리</th><th>구분</th><th style="text-align:right">금액</th><th>상태</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-top:1px solid var(--border)">
+        <span style="color:var(--text-3);font-size:12.5px">…외 61건</span>
+        <div style="display:flex;gap:9px">
+          <button class="btn btn-ghost" onclick="importStep=2;rerenderImport()">이전</button>
+          <button class="btn btn-primary" onclick="importStep=4;rerenderImport()">61건 가져오기 확정</button>
+        </div>
+      </div>
+    </div>`;
+  }else{
+    body=`
+    <div class="card card-pad" style="text-align:center;padding:52px">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--primary-soft);display:grid;place-items:center;margin:0 auto 18px">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <div style="font-size:19px;font-weight:800">61건을 가져왔어요 🎉</div>
+      <div style="color:var(--text-2);margin-top:7px">현대카드 · 2026년 7월 · 중복 5건 제외, 오류 2건 건너뜀</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:22px">
+        <button class="btn btn-ghost" onclick="importStep=1;rerenderImport()">파일 더 가져오기</button>
+        <button class="btn btn-primary" onclick="go('transactions')">거래 내역 보기 →</button>
+      </div>
+    </div>`;
+  }
+  return stepper+body;
+}
+function rerenderImport(){document.getElementById('content').innerHTML=importRender();}
+
+SCREENS.categories=()=>{
+  const tiles=Object.entries(CATS).filter(([k])=>k!=='income').map(([k,c],i)=>`
+    <div class="cattile">
+      <div class="ci" style="background:${c.bg}">${c.emo}</div>
+      <div class="meta"><b>${c.name}</b><span>${i<5?'기본':'사용자 정의'}</span></div>
+      <div class="act"><button title="편집">✎</button><button title="삭제">🗑</button></div>
+    </div>`).join('');
+  const rules=RULES.map(r=>`
+    <div class="rule">
+      <span class="pill">"${r.kw}"</span>
+      <span class="arrow">→</span>
+      ${catChip(r.cat)}
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto">삭제</button>
+    </div>`).join('');
+  return `
+  <div class="grid" style="grid-template-columns:1.3fr 1fr">
+    <div class="card">
+      <div class="card-h"><h3>카테고리</h3><button class="btn btn-primary btn-sm">+ 카테고리 추가</button></div>
+      <div class="card-pad">
+        <div class="catgrid">${tiles}</div>
+        <div class="hint" style="margin-top:14px">기본 카테고리는 가계 생성 시 자동으로 만들어져요. <span class="frtag">FR-CT-01</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>자동 분류 규칙</h3><span class="muted">FR-CT-03</span></div>
+      <div class="card-pad">
+        <div class="invite-box" style="border-style:solid;margin-bottom:12px">
+          <input placeholder="키워드 (예: 올리브영)" style="flex:1;border:none;outline:none;background:none">
+          <span class="arrow" style="color:var(--text-3)">→</span>
+          <select style="border:1px solid var(--border-strong);border-radius:8px;padding:7px 9px"><option>카테고리</option><option>식비</option><option>카페·간식</option></select>
+          <button class="btn btn-primary btn-sm">추가</button>
+        </div>
+        ${rules}
+        <div class="hint" style="margin-top:12px">적요에 키워드가 포함되면 자동으로 분류돼요. 자동 결과는 언제든 덮어쓸 수 있어요.</div>
+      </div>
+    </div>
+  </div>`;
+};
+
+SCREENS.budget=()=>{
+  const rows=BUDGET.map(b=>{
+    const pct=Math.round(b.spent/b.limit*100);
+    const over=b.spent>b.limit;
+    const color=over?'var(--danger)':pct>85?'var(--warn)':'var(--primary)';
+    return `<div class="budrow">
+      <div class="top">
+        <div class="catchip"><span class="emo" style="font-size:16px">${CATS[b.cat].emo}</span><b>${CATS[b.cat].name}</b>
+          ${over?'<span class="tag" style="background:#fdf2f2;color:var(--danger);margin-left:4px">초과</span>':''}</div>
+        <div class="amt-s tnum"><b style="color:${over?'var(--danger)':'var(--text)'}">${KRW(-b.spent).replace('-','')}</b> / ${KRW(-b.limit).replace('-','')}</div>
+      </div>
+      <div class="bar-track" style="height:9px"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${color}"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--text-3)">
+        <span>${pct}% 사용</span>
+        <span>${over?'초과 '+KRW(-(b.spent-b.limit)).replace('-',''):'남음 '+KRW(-(b.limit-b.spent)).replace('-','')}</span>
+      </div>
+    </div>`;
+  }).join('');
+  const totSpent=BUDGET.reduce((s,b)=>s+b.spent,0),totLimit=BUDGET.reduce((s,b)=>s+b.limit,0);
+  return `
+  <div class="grid" style="grid-template-columns:1fr 1.5fr">
+    <div class="card stat" style="height:fit-content">
+      <div class="k"><span class="dot" style="background:var(--primary)"></span>이번 달 예산 소진</div>
+      <div class="v tnum">${Math.round(totSpent/totLimit*100)}%</div>
+      <div class="bar-track" style="height:10px;margin-top:12px"><div class="bar-fill" style="width:${totSpent/totLimit*100}%;background:var(--primary)"></div></div>
+      <div class="d" style="margin-top:12px">${KRW(-totSpent).replace('-','')} / ${KRW(-totLimit).replace('-','')} · 남음 ${KRW(-(totLimit-totSpent)).replace('-','')}</div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>카테고리별 예산 <span style="color:var(--text-3);font-weight:500">· 2026년 7월</span></h3>
+        <button class="btn btn-ghost btn-sm">예산 편집</button></div>
+      <div class="card-pad">${rows}
+        <div class="hint" style="margin-top:6px">예산 초과 카테고리는 빨간색으로 표시돼요. <span class="frtag">FR-BG-01 · FR-BG-02</span></div>
+      </div>
+    </div>
+  </div>`;
+};
+
+SCREENS.accounts=()=>{
+  const ownerAv=o=>`<span class="av-sm" style="background:${o==='a'?'var(--a)':o==='b'?'var(--b)':'var(--primary)'}">${o==='a'?'지':o==='b'?'서':'공'}</span>`;
+  const totBal=ACCOUNTS.reduce((s,a)=>s+a.bal,0);
+  const totBill=CARDS.reduce((s,c)=>s+c.billing,0);
+  const acctRows=ACCOUNTS.map(a=>`
+    <div class="memberrow">
+      ${ownerAv(a.owner)}
+      <div style="flex:1"><b>${a.name}</b> <span class="tag ${a.owner==='a'?'tag-a':a.owner==='b'?'tag-b':'tag-shared'}" style="margin-left:4px">${a.owner==='a'?'지훈':a.owner==='b'?'서연':'● 공동'}</span>
+        <div style="font-size:12px;color:var(--text-3)">${a.bank} · ${a.num}</div></div>
+      <div class="tnum" style="font-weight:800;font-size:16px">${KRW(a.bal)}</div>
+    </div>`).join('');
+  const cardRows=CARDS.map(c=>`
+    <div class="memberrow">
+      ${ownerAv(c.owner)}
+      <div style="flex:1"><b>${c.name}</b> <span class="tag ${c.owner==='a'?'tag-a':'tag-b'}" style="margin-left:4px">${c.owner==='a'?'지훈':'서연'}</span>
+        <div style="font-size:12px;color:var(--text-3)">결제계좌 <b style="color:var(--text-2)">${c.settle}</b> · ${c.due} 결제 예정</div></div>
+      <div style="text-align:right"><div style="font-size:11px;color:var(--text-3)">이번 달 청구</div><div class="tnum" style="font-weight:800;font-size:16px">${KRW(-c.billing).replace('-','')}</div></div>
+    </div>`).join('');
+  return `
+  <div class="grid stats" style="margin-bottom:4px">
+    <div class="card stat"><div class="k"><span class="dot" style="background:var(--primary)"></span>총 계좌 잔액</div><div class="v tnum" style="color:var(--primary)">${KRW(totBal)}</div><div class="d">계좌 ${ACCOUNTS.length}개</div></div>
+    <div class="card stat"><div class="k"><span class="dot" style="background:var(--expense)"></span>이번 달 카드 청구</div><div class="v tnum">${KRW(-totBill).replace('-','')}</div><div class="d">카드 ${CARDS.length}장 · 결제일 계좌에서 인출</div></div>
+    <div class="card stat"><div class="k"><span class="dot" style="background:var(--text-3)"></span>이번 달 이체·결제</div><div class="v tnum" style="color:var(--text-2)">${KRW(1142000)}</div><div class="d">지출 집계에서 제외</div></div>
+  </div>
+
+  <div class="grid split" style="margin-top:16px">
+    <div class="card">
+      <div class="card-h"><h3>계좌</h3><button class="btn btn-primary btn-sm">+ 계좌 추가</button></div>
+      <div class="card-pad" style="padding-top:4px">${acctRows}
+        <div class="hint" style="margin-top:10px">계좌 잔액은 가져온 입출금 내역으로 계산돼요. <span class="frtag">FR-AC-01</span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>카드</h3><button class="btn btn-primary btn-sm">+ 카드 추가</button></div>
+      <div class="card-pad" style="padding-top:4px">${cardRows}
+        <div class="hint" style="margin-top:10px">각 카드는 <b>결제계좌</b>에 연결돼요. 카드대금 인출은 자동으로 '이체'로 잡혀요. <span class="frtag">FR-AC-02 · FR-AC-03</span></div></div>
+    </div>
+  </div>
+
+  <div class="sectiontitle">돈의 흐름 <span class="frtag">FR-AC-04</span></div>
+  <div class="card card-pad">
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:8px 0">
+      <div style="text-align:center"><div class="ci" style="width:56px;height:56px;border-radius:14px;background:var(--a-soft);display:grid;place-items:center;font-size:24px;margin:0 auto">💳</div><div style="font-size:12.5px;font-weight:600;margin-top:7px">카드 결제</div><div style="font-size:11px;color:var(--text-3)">개별 지출 = 집계</div></div>
+      <div style="color:var(--text-3);font-size:22px">→</div>
+      <div style="text-align:center"><div class="ci" style="width:56px;height:56px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border);display:grid;place-items:center;font-size:24px;margin:0 auto">🏦</div><div style="font-size:12.5px;font-weight:600;margin-top:7px">결제계좌</div><div style="font-size:11px;color:var(--text-3)">카드대금 인출 = 이체</div></div>
+      <div style="color:var(--text-3);font-size:22px">⇄</div>
+      <div style="text-align:center"><div class="ci" style="width:56px;height:56px;border-radius:14px;background:var(--primary-soft);display:grid;place-items:center;font-size:24px;margin:0 auto">🏦</div><div style="font-size:12.5px;font-weight:600;margin-top:7px">다른 계좌</div><div style="font-size:11px;color:var(--text-3)">계좌 송금 = 이체</div></div>
+    </div>
+    <div class="hint" style="justify-content:center;margin-top:12px">✅ 실제 <b>지출</b>은 카드·계좌의 개별 결제만 집계하고, <b>카드대금 인출·계좌 송금</b>은 내부 이동(이체)이라 이중집계되지 않아요.</div>
+  </div>`;
+};
+
+SCREENS.settings=()=>`
+  <div class="grid" style="grid-template-columns:1fr;max-width:720px">
+    <div class="card">
+      <div class="card-h"><h3>우리 가계</h3><span class="muted">FR-HM-01</span></div>
+      <div class="card-pad">
+        <div class="field" style="max-width:340px;margin-bottom:0">
+          <label>가계 이름</label>
+          <input value="지훈 · 서연네" style="width:100%;padding:11px 13px;border:1px solid var(--border-strong);border-radius:10px;outline:none">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>멤버 <span style="color:var(--text-3);font-weight:500">· 2 / 2</span></h3><span class="muted">FR-HM-03</span></div>
+      <div class="card-pad">
+        <div class="memberrow">
+          <span class="av-sm" style="width:40px;height:40px;background:var(--a);font-size:14px">지</span>
+          <div style="flex:1"><b>지훈</b> <span class="tag tag-a" style="margin-left:4px">나</span><div style="font-size:12.5px;color:var(--text-3)">jihoon@example.com</div></div>
+        </div>
+        <div class="memberrow">
+          <span class="av-sm" style="width:40px;height:40px;background:var(--b);font-size:14px">서</span>
+          <div style="flex:1"><b>서연</b><div style="font-size:12.5px;color:var(--text-3)">seoyeon@example.com</div></div>
+          <span style="font-size:12.5px;color:var(--income);font-weight:600">● 연결됨</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>파트너 초대</h3><span class="muted">FR-HM-02</span></div>
+      <div class="card-pad">
+        <p style="color:var(--text-2);margin-bottom:12px">아래 초대 링크를 배우자에게 보내면 같은 가계에 합류합니다. 링크는 <b>48시간 후 만료</b>되는 1회용이에요.</p>
+        <div class="invite-box">
+          <code>https://couplebudget.app/invite/8f3k-92xh-qp07</code>
+          <button class="btn btn-primary btn-sm" onclick="this.textContent='복사됨 ✓'">복사</button>
+        </div>
+        <div class="hint" style="margin-top:12px">✅ 이미 2인이 찬 가계에는 추가로 합류할 수 없어요. (MVP 2인 고정)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>보안 · 개인정보</h3><span class="muted">NFR-SEC · NFR-PRV</span></div>
+      <div class="card-pad" style="display:flex;flex-direction:column;gap:10px">
+        <div class="detbox ok">🔒 이 앱은 은행·카드 로그인 정보를 <b>일절 저장하지 않습니다.</b></div>
+        <div class="detbox info">👥 가계 데이터는 우리 두 사람에게만 보여요 (행 수준 격리).</div>
+      </div>
+    </div>
+  </div>`;
+
+/* ---------------- transaction modal ---------------- */
+function openTxModal(i){
+  const isNew=i<0;const t=isNew?{merc:'',cat:'food',amt:'',tag:'shared'}:TX[i];
+  const bg=document.getElementById('modalBg');
+  bg.innerHTML=`
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${isNew?'거래 추가':'거래 편집'}</h3><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">
+      <div class="field" style="margin:0">
+        <label>유형</label>
+        <div class="toggle-shared">
+          <button class="${t.type==='exp'||t.type===undefined?'active':''}" onclick="pickTag(this)">지출</button>
+          <button class="${t.type==='inc'?'active':''}" onclick="pickTag(this)">수입</button>
+          <button class="${t.type==='transfer'?'active':''}" onclick="pickTag(this)">⇄ 이체</button>
+        </div>
+      </div>
+      <div class="field" style="margin:0"><label>적요 / 가맹점</label><input value="${t.merc}" placeholder="예: 이마트 성수점"></div>
+      <div style="display:flex;gap:12px">
+        <div class="field" style="margin:0;flex:1"><label>금액</label><input class="tnum" value="${t.amt?Math.abs(t.amt).toLocaleString('ko-KR'):''}" placeholder="0"></div>
+        <div class="field" style="margin:0;flex:1"><label>${isNew?'출금 계좌 / 카드':'계좌 / 카드'}</label>
+          <select style="width:100%;padding:12px 14px;border:1px solid var(--border-strong);border-radius:11px;outline:none">
+            ${ACCOUNTS.map(a=>`<option>${a.name} (계좌)</option>`).join('')}
+            ${CARDS.map(c=>`<option>${c.name} (카드)</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px">
+        <div class="field" style="margin:0;flex:1"><label>카테고리</label>
+          <select style="width:100%;padding:12px 14px;border:1px solid var(--border-strong);border-radius:11px;outline:none">
+            ${Object.entries(CATS).map(([k,c])=>`<option ${k===t.cat?'selected':''}>${c.emo} ${c.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field" style="margin:0;flex:1"><label>할부 <span class="frtag">FR-TX-04</span></label>
+          <select onchange="toggleInst(this)" style="width:100%;padding:12px 14px;border:1px solid var(--border-strong);border-radius:11px;outline:none">
+            <option ${t.inst?'':'selected'}>일시불</option><option>2개월 무이자</option><option ${t.inst?'selected':''}>3개월 무이자</option><option>6개월 (유이자)</option><option>12개월 (유이자)</option>
+          </select>
+        </div>
+      </div>
+      <div id="instSched" style="display:${t.inst?'block':'none'};background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:12.5px">
+        <div style="font-weight:600;margin-bottom:7px">할부 스케줄 · 월 200,000원 × 3개월</div>
+        <div style="display:flex;gap:7px">
+          <span class="tag" style="background:var(--warn-soft);color:var(--warn)">7월 1/3</span>
+          <span class="tag" style="background:#eef1f4;color:var(--text-3)">8월 2/3</span>
+          <span class="tag" style="background:#eef1f4;color:var(--text-3)">9월 3/3</span>
+        </div>
+        <div class="hint" style="margin-top:8px">'구매 시점' 보기 = 7월에 전액 / '월 청구' 보기 = 매월 청구분만 집계. 카드대금 인출과는 자동으로 이중집계 방지돼요.</div>
+      </div>
+      <div class="field" style="margin:0">
+        <label>공동 / 개인 구분 <span class="frtag">FR-SH-01</span></label>
+        <div class="toggle-shared">
+          <button class="${t.tag==='shared'?'active':''}" onclick="pickTag(this)">● 공동</button>
+          <button class="${t.tag==='a'?'active':''}" onclick="pickTag(this)">지훈 개인</button>
+          <button class="${t.tag==='b'?'active':''}" onclick="pickTag(this)">서연 개인</button>
+        </div>
+      </div>
+      <div class="hint">⇄ 유형을 <b>이체</b>로 지정하면 출금→입금 계좌를 고르고, 수입·지출 집계에서 자동 제외돼요.</div>
+    </div>
+    <div class="modal-f">
+      ${isNew?'':'<button class="btn btn-danger" style="margin-right:auto" onclick="closeModal()">삭제</button>'}
+      <button class="btn btn-ghost" onclick="closeModal()">취소</button>
+      <button class="btn btn-primary" onclick="closeModal()">저장</button>
+    </div>
+  </div>`;
+  bg.classList.add('show');
+}
+function pickTag(btn){btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function toggleInst(sel){const s=document.getElementById('instSched');if(s)s.style.display=sel.value==='일시불'?'none':'block';}
+function closeModal(){document.getElementById('modalBg').classList.remove('show');}
+
+/* ---------------- transfer tools (수동 이중집계 방지) ---------------- */
+function openTransferTools(){
+  const pair=(m,dr,cr,amt)=>`
+    <div style="border:1px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12.5px"><span class="tag" style="background:#fdf2f2;color:var(--danger)">출금</span><b>${dr}</b><span class="tnum" style="margin-left:auto;font-weight:700">${KRW(-amt).replace('-','')}</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;margin-top:6px"><span class="tag" style="background:#e6f6ee;color:var(--income)">입금</span><b>${cr}</b><span class="tnum" style="margin-left:auto;font-weight:700;color:var(--income)">+${KRW(amt).replace('₩','').replace('-','')}</span></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="this.textContent='연결됨 ✓';this.disabled=true;this.style.opacity=.6">이체로 연결</button>
+      </div>
+      <div class="hint" style="margin-top:8px">💡 ${m}</div>
+    </div>`;
+  const rule=(kw)=>`<div class="rule"><span class="pill">"${kw}"</span><span class="arrow">→</span><span class="tag" style="background:#eef1f4;color:var(--text-2)">⇄ 항상 이체</span><button class="btn btn-ghost btn-sm" style="margin-left:auto">삭제</button></div>`;
+  const bg=document.getElementById('modalBg');
+  bg.innerHTML=`
+  <div class="modal" style="width:540px" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>이체 관리 · 이중집계 방지 <span class="frtag">FR-AC-04</span></h3><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">
+      <div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px">① 이체 짝 맞추기</div>
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:10px">한 계좌의 출금과 다른 계좌·카드의 입금이 같은 돈이면 연결하세요. 연결하면 둘 다 지출 집계에서 빠집니다.</p>
+        ${pair('금액·날짜가 일치하는 계좌↔카드 이동으로 보여요','신한 주거래','현대카드 M (대금)',642000)}
+        ${pair('서연 개인 계좌 → 공동통장 송금','국민 급여','카카오뱅크 공동',500000)}
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:13px;margin:8px 0 4px">② 이체 자동 규칙</div>
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:10px">적요에 이 키워드가 있으면 앞으로 자동으로 '이체'로 분류합니다.</p>
+        <div class="invite-box" style="border-style:solid;margin-bottom:10px">
+          <input placeholder="키워드 (예: 카드대금, 증권이체)" style="flex:1;border:none;outline:none;background:none">
+          <button class="btn btn-primary btn-sm">규칙 추가</button>
+        </div>
+        ${rule('카드대금')}${rule('자동이체 결제')}${rule('○○증권')}
+      </div>
+    </div>
+    <div class="modal-f"><button class="btn btn-ghost" onclick="closeModal()">닫기</button><button class="btn btn-primary" onclick="closeModal()">저장</button></div>
+  </div>`;
+  bg.classList.add('show');
+}
+</script>
+</body>
+</html>
