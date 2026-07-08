@@ -50,6 +50,6 @@ backend/    서버(백업/복원) — Phase 2
 - 할부 두 관점(구매시점/월청구) (ADR-0006)
 - 로컬 우선 + S3 백업, 인증은 서버 쓸 때만 (ADR-0007, 0008)
 
-## 스택 방향 (제안, 미확정)
+## 스택 (확정 · ADR-0010~0012)
 
-Expo(React Native, iOS/Android/Web 단일 코드베이스) + 로컬 SQLite. 상세: `docs/02-construction/05-repo-and-stack-2026.md`.
+Expo(React Native, iOS/Android/Web 단일 코드베이스) + NativeWind + 로컬 SQLite. 백엔드는 Phase 2 S3 서버리스 백업. 상세: `docs/02-construction/05-repo-and-stack-2026.md`, ADR-0010/0011/0012.

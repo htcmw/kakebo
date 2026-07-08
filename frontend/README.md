@@ -2,7 +2,7 @@
 
 couplebudget 클라이언트 앱. **Phase 1(로컬 우선 MVP)** 의 본체.
 
-## 방향 (제안, 미확정)
+## 방향 (확정 · ADR-0010, 0011)
 
 - **Expo (React Native)** — iOS/Android/Web 단일 코드베이스. (NFR-PLT-01 모바일+웹)
 - 웹 레이어: React Strict DOM(또는 당분간 RNW).
