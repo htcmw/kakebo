@@ -45,7 +45,7 @@ backend/    서버(백업/복원) — Phase 2
 - `.claude/skills/commit-conventions` 를 따른다: `type(scope): subject` + 한국어 subject + `Refs: ADR-xxxx, FR-xxx` footer.
 - 한 커밋 = 한 관심사. 단계별로 쪼개 커밋.
 
-## 핵심 결정 (요약, 상세는 ADR)
+## 핵심 결정 (요약 · 전체 지도: `docs/decisions/README.md`)
 
 - 자동연동 미사용, 수동 export→import (ADR-0001)
 - 카드 이용내역=지출 단일 원천, 정산은 이체 / 내부·외부 구분 (ADR-0004, 0005)
