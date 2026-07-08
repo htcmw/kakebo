@@ -24,6 +24,8 @@
 | 상태관리 | 경량(예: **Zustand**) + 쿼리는 로컬 DB 접근 계층으로 |
 | 스타일링 | ADR-0010 (NativeWind 등) |
 
+> **과금유도 회피(ADR-0013)**: Expo SDK/CLI/Router는 MIT·영구 무료. 유료 소지는 **EAS 클라우드 서비스**(Build/Update/Submit)뿐이며 **선택적**으로만 쓴다 — 빌드는 로컬 또는 GitHub Actions 무료 러너(`eas build --local`), OTA는 자가호스팅 가능. EAS 없이도 프로덕션 앱을 만들 수 있다.
+
 ## 근거
 
 - Expo는 2026 표준이자 생태계가 활발(New Arch 필수화, Expo Router 앱 프레임워크화, OTA 효율화).
