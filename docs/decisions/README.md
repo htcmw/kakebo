@@ -10,7 +10,7 @@
 | `02-finance-logic/` | 가계부 핵심 계산 로직 (frontend·집계) | 0004 이용=지출/정산=이체 · 0005 내부vs외부 이체 · 0006 할부 두 관점 |
 | `03-architecture-and-auth/` | 아키텍처·인증 (all·backend) | 0007 로컬 우선+S3백업 · 0008 인증은 서버만 · 0002 매직링크(⚠️ 부분대체) |
 | `04-tech-stack/` | 기술 스택 (frontend·backend) | 0013 선택 원칙 · 0010 UI · 0011 프론트 · 0012 백엔드 |
-| `05-process-and-docs/` | 개발 방식·문서 (all agents·spec-writer) | 0003 문서 구조 · 0009 에이전틱 워크플로 |
+| `05-process-and-docs/` | 개발 방식·문서 (all agents·product-owner) | 0003 문서 구조 · 0009 에이전틱 워크플로 |
 
 > 번호(0001…)는 시간순, 폴더는 성격. 파일명이 번호를 유지하므로 연대기와 분류를 동시에 본다.
 

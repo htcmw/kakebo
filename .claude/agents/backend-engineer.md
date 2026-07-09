@@ -1,5 +1,5 @@
 ---
-name: backend-dev
+name: backend-engineer
 description: Phase 2 백엔드(백업/복원, 향후 공유)를 구현할 때 사용. 로컬 우선 MVP에는 서버가 없으므로, Phase 2 착수 전에는 설계 검토만.
 tools: Read, Write, Edit, Grep, Glob, Bash
 model: inherit

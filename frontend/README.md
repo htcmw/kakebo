@@ -17,4 +17,4 @@ couplebudget 클라이언트 앱. **Phase 1(로컬 우선 MVP)** 의 본체.
 
 ## 상태
 
-🟡 아직 스캐폴드 전. 스택 확정(`../docs/02-construction/05-repo-and-stack-2026.md`) 후 초기화 예정.
+🟡 아직 스캐폴드 전. 스택 확정(`../docs/02-construction/05-repo-and-stack.md`) 후 초기화 예정.

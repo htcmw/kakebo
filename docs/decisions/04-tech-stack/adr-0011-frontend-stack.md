@@ -42,4 +42,4 @@
 - 확정 시 Accepted로.
 
 ## 관련 문서
-- [레포·스택 문서](../../02-construction/05-repo-and-stack-2026.md), ADR-0010(UI), ADR-0012(백엔드), ADR-0007/0008
+- [레포·스택 문서](../../02-construction/05-repo-and-stack.md), ADR-0010(UI), ADR-0012(백엔드), ADR-0007/0008

@@ -45,4 +45,4 @@
 - (→) ADR-0011(EAS 선택적), ADR-0012(백엔드 오픈 대안)에 반영.
 
 ## 관련 문서
-- ADR-0010, 0011, 0012, `../02-construction/05-repo-and-stack-2026.md`
+- ADR-0010, 0011, 0012, `../02-construction/05-repo-and-stack.md`

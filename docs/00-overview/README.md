@@ -28,7 +28,7 @@ docs/
 | 데이터 모델 | `02-construction/02-data-model.md` | 🟡 초안 |
 | 이체 매칭 규칙 (내부/외부 판별) | `02-construction/03-transfer-matching.md` | 🟡 초안 |
 | UI 설계 | `02-construction/04-ui-design.md` | 🟡 초안 (목업 참조) |
-| 레포 구조·스택·2026 트렌드 | `02-construction/05-repo-and-stack-2026.md` | 🟡 초안 |
+| 레포 구조·스택·2026 트렌드 | `02-construction/05-repo-and-stack.md` | 🟡 초안 |
 | 에이전틱 개발 워크플로 | `02-construction/06-agentic-workflow.md` | 🟢 활성 규칙 |
 | 개발 프로세스 (정의) | `meta/development-process.md` | 🟢 활성 규칙 |
 | 개발 진행 이력 | `00-overview/development-log.md` | 🟢 유지 |

@@ -14,17 +14,17 @@ AI 에이전트·기여자를 위한 프로젝트 공통 지침. (2026 모노레
 
 ## 작업 방식 (에이전틱 워크플로 · ADR-0009)
 
-루프: **의도(사람) → 계획 → 실행(에이전트) → 검증(사람/verifier) → 기록**. 스펙 없이 큰 구현을 시작하지 않고, 결정이 바뀌면 코드보다 먼저 문서(ADR/요구사항)를 갱신한다. 상세: `docs/02-construction/06-agentic-workflow.md`.
+루프: **의도(사람) → 계획 → 실행(에이전트) → 검증(사람/qa-verifier) → 기록**. 스펙 없이 큰 구현을 시작하지 않고, 결정이 바뀌면 코드보다 먼저 문서(ADR/요구사항)를 갱신한다. 상세: `docs/02-construction/06-agentic-workflow.md`.
 
-**오케스트레이션**: 범위가 분리되면 역할별 서브에이전트(`.claude/agents/`)로 나눠 실행한다 — `spec-writer`(docs), `frontend-dev`(frontend), `backend-dev`(backend), `verifier`(검증). 작은 변경은 단일 에이전트로(비례 적용).
+**오케스트레이션**: 범위가 분리되면 역할별 서브에이전트(`.claude/agents/`)로 나눠 실행한다 — `product-owner`(docs), `frontend-engineer`(frontend), `backend-engineer`(backend), `qa-verifier`(검증). 작은 변경은 단일 에이전트로(비례 적용).
 
-**검증 게이트 (Definition of Done)**: FR 인수조건 충족 + 스펙↔코드 드리프트 없음 + 커밋 컨벤션(`Refs:`) + 새 결정은 ADR + verifier/사람 리뷰 통과. 이걸 만족해야 "완료".
+**검증 게이트 (Definition of Done)**: FR 인수조건 충족 + 스펙↔코드 드리프트 없음 + 커밋 컨벤션(`Refs:`) + 새 결정은 ADR + qa-verifier/사람 리뷰 통과. 이걸 만족해야 "완료".
 
 ## 기술 선택 원칙·근거
 
 **원칙(ADR-0013)**: 오픈소스 또는 무료 · 활성 커뮤니티 · 높은 완성도 · **과금유도 없음**. 유료 서비스는 선택적 편의로만 쓰고 항상 무료/오픈 대체 경로를 표준 인터페이스로 열어둔다.
 
-모든 기술 선택은 **왜 골랐는지**를 문서로 남긴다(UI/프론트/백엔드 각각). ADR-0010(UI)·0011(프론트엔드)·0012(백엔드)·0013(원칙) 및 `docs/02-construction/05-repo-and-stack-2026.md` 참조.
+모든 기술 선택은 **왜 골랐는지**를 문서로 남긴다(UI/프론트/백엔드 각각). ADR-0010(UI)·0011(프론트엔드)·0012(백엔드)·0013(원칙) 및 `docs/02-construction/05-repo-and-stack.md` 참조.
 
 ## 개발 프로세스·이력
 
@@ -54,4 +54,4 @@ backend/    서버(백업/복원) — Phase 2
 
 ## 스택 (확정 · ADR-0010~0012)
 
-Expo(React Native, iOS/Android/Web 단일 코드베이스) + NativeWind + 로컬 SQLite. 백엔드는 Phase 2 S3 서버리스 백업. 상세: `docs/02-construction/05-repo-and-stack-2026.md`, ADR-0010/0011/0012.
+Expo(React Native, iOS/Android/Web 단일 코드베이스) + NativeWind + 로컬 SQLite. 백엔드는 Phase 2 S3 서버리스 백업. 상세: `docs/02-construction/05-repo-and-stack.md`, ADR-0010/0011/0012.

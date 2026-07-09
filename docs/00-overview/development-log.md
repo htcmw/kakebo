@@ -14,13 +14,14 @@
 | 2026-07 | 문서를 드라이브→로컬 레포로 이관(구조만), 커밋 컨벤션 스킬 도입 | `docs/`, `.claude/skills/commit-conventions` |
 | 2026-07 | **아키텍처 전환** — 로컬 우선 + S3 백업, 인증은 서버 쓸 때만 | ADR-0007, 0008, `01-architecture` |
 | 2026-07 | 로그인 제거(로컬 진입), 모노레포 구조(docs/designs/frontend/backend + AGENTS.md) | 목업 갱신, `AGENTS.md` |
-| 2026-07 | 2026 트렌드 검토(SDD·컨텍스트 엔지니어링·오케스트레이션·로컬 우선), 스택 방향 = Expo | `05-repo-and-stack-2026.md` |
+| 2026-07 | 2026 트렌드 검토(SDD·컨텍스트 엔지니어링·오케스트레이션·로컬 우선), 스택 방향 = Expo | `05-repo-and-stack.md` |
 | 2026-07 | **작업 방식 채택** — 에이전틱 엔지니어링·멀티에이전트 오케스트레이션·검증 중심 | ADR-0009, `06-agentic-workflow`, `.claude/agents/` |
 | 2026-07 | 기술 선택 근거 문서화(UI/프론트/백엔드) | ADR-0010, 0011, 0012 |
 | 2026-07 | **스택 확정** — Expo+NativeWind+로컬 SQLite, Phase2 S3 서버리스 백업 | ADR-0010~0012 Accepted |
 | 2026-07 | 기술 선택 원칙(오픈소스·무료·과금유도 없음) 채택, 스택 감사·조정(EAS 선택적, 백엔드 R2/오픈 대안) | ADR-0013 |
 | 2026-07 | ADR 결정 지도(카테고리·관계도) 추가로 결정 구조화 | `decisions/README.md` |
 | 2026-07 | ADR을 카테고리 **폴더 구조**로 재편(사람이 트리로 검증 가능) | `decisions/0N-*/` |
+| 2026-07 | 네이밍 개선 — 역할명(product-owner/frontend-engineer/backend-engineer/qa-verifier) 통일, 파일명 연도 제거 | `development-process.md` §7 |
 
 > 이 로그는 요약이다. 각 결정의 맥락·근거·결과는 해당 ADR을, 변경 단위는 git 커밋(컨벤션 `Refs:`)을 본다.
 
