@@ -23,6 +23,7 @@
 | 2026-07 | ADR을 카테고리 **폴더 구조**로 재편(사람이 트리로 검증 가능) | `decisions/0N-*/` |
 | 2026-07 | 네이밍 개선 — 역할명(product-owner/frontend-engineer/backend-engineer/qa-verifier) 통일, 파일명 연도 제거 | `development-process.md` §7 |
 | 2026-07 | UI/UX 디자인 역할 `ui-ux-designer` 추가(designs/ 담당) | `.claude/agents/ui-ux-designer.md` |
+| 2026-07 | 역할별 결과물 체크리스트(백로그) 작성 | `meta/role-deliverables.md` |
 
 > 이 로그는 요약이다. 각 결정의 맥락·근거·결과는 해당 ADR을, 변경 단위는 git 커밋(컨벤션 `Refs:`)을 본다.
 

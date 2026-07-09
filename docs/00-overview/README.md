@@ -31,6 +31,7 @@ docs/
 | 레포 구조·스택·2026 트렌드 | `02-construction/05-repo-and-stack.md` | 🟡 초안 |
 | 에이전틱 개발 워크플로 | `02-construction/06-agentic-workflow.md` | 🟢 활성 규칙 |
 | 개발 프로세스 (정의) | `meta/development-process.md` | 🟢 활성 규칙 |
+| 역할별 결과물 (백로그) | `meta/role-deliverables.md` | 🟢 유지 |
 | 개발 진행 이력 | `00-overview/development-log.md` | 🟢 유지 |
 | UI 목업 (인터랙티브) | `../designs/ui-mockup.html` | 🟢 P0 전 화면 |
 
