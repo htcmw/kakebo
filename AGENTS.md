@@ -16,7 +16,7 @@ AI 에이전트·기여자를 위한 프로젝트 공통 지침. (2026 모노레
 
 루프: **의도(사람) → 계획 → 실행(에이전트) → 검증(사람/qa-verifier) → 기록**. 스펙 없이 큰 구현을 시작하지 않고, 결정이 바뀌면 코드보다 먼저 문서(ADR/요구사항)를 갱신한다. 상세: `docs/02-construction/06-agentic-workflow.md`.
 
-**오케스트레이션**: 범위가 분리되면 역할별 서브에이전트(`.claude/agents/`)로 나눠 실행한다 — `product-owner`(docs), `frontend-engineer`(frontend), `backend-engineer`(backend), `qa-verifier`(검증). 작은 변경은 단일 에이전트로(비례 적용).
+**오케스트레이션**: 범위가 분리되면 역할별 서브에이전트(`.claude/agents/`)로 나눠 실행한다 — `product-owner`(docs), `ui-ux-designer`(designs), `frontend-engineer`(frontend), `backend-engineer`(backend), `qa-verifier`(검증). 작은 변경은 단일 에이전트로(비례 적용).
 
 **검증 게이트 (Definition of Done)**: FR 인수조건 충족 + 스펙↔코드 드리프트 없음 + 커밋 컨벤션(`Refs:`) + 새 결정은 ADR + qa-verifier/사람 리뷰 통과. 이걸 만족해야 "완료".
 

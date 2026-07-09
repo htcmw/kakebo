@@ -48,7 +48,7 @@ FR 인수조건 → 테스트/체크로 연결. 스펙↔코드 드리프트 감
 - **금지**: 파일명에 버전·연도·상태를 넣지 않는다(그건 문서 상단 상태 필드·하단 변경 이력으로). 예: ~~`05-repo-and-stack-2026.md`~~ → `05-repo-and-stack.md`.
 
 **서브에이전트(역할) 이름** — `<영역>-<역할명사>` 형식으로 통일:
-- `product-owner` (docs 담당) · `frontend-engineer` · `backend-engineer` · `qa-verifier`.
+- `product-owner` (docs) · `ui-ux-designer` (designs) · `frontend-engineer` · `backend-engineer` · `qa-verifier`.
 - 정의는 `.claude/agents/<이름>.md`, `name:` 필드와 파일명을 일치시킨다.
 
 진행 이력은 [`../00-overview/development-log.md`](../00-overview/development-log.md).
