@@ -34,6 +34,8 @@ docs/
 | 역할별 결과물 (백로그) | `meta/role-deliverables.md` | 🟢 유지 |
 | 개발 진행 이력 | `00-overview/development-log.md` | 🟢 유지 |
 | UI 목업 (인터랙티브) | `../designs/ui-mockup.html` | 🟢 P0 전 화면 |
+| 정보구조(IA)·내비게이션 | `../designs/information-architecture.md` | 🟡 초안 |
+| 유저 플로우 | `../designs/user-flows.md` | 🟡 초안 |
 
 ## 결정 로그 (ADR)
 

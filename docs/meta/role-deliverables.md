@@ -24,8 +24,8 @@
 ## ui-ux-designer — `designs/` (화면·플로우·디자인 시스템)
 
 - [x] P0 인터랙티브 목업(데스크톱)
-- [ ] 유저 플로우/여정 — 진입→import 4단계→분류→대시보드 / 이체 처리 / 할부 토글
-- [ ] 정보구조(IA)·내비게이션 맵
+- [x] 유저 플로우/여정 — `designs/user-flows.md` (8개 핵심 플로우)
+- [x] 정보구조(IA)·내비게이션 맵 — `designs/information-architecture.md`
 - [ ] 와이어프레임(핵심 플로우)
 - [ ] 모바일 반응형 화면(NFR-PLT-01)
 - [ ] 디자인 토큰/테마(색·타이포·간격 → NativeWind로 넘길 형태)
