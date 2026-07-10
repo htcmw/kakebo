@@ -23,13 +23,14 @@ description: Standardized git commit messages for the kakebo (couplebudget) proj
 - **scope** (권장, 영문): 변경 범위. 예: `ui` `mockup` `overview` `requirements` `adr` `data-model` `matching` `import` `transactions` `accounts` `budget` `categories` `meta`
 - **subject** (필수): 한국어 명령형, 마침표 없음, 50자 이내 권장(최대 72). "무엇을" 요약
 - **body** (선택): 왜/무엇을 상세히. 한 줄 72자 이내. 한국어 가능
-- **footer** (선택): 추적성·이슈. `Refs: ADR-0004, FR-AC-04` / `BREAKING CHANGE: ...` / `Closes #12`
+- **footer** (**이슈 필수**, ADR-0014): 이슈 연결을 반드시 넣는다 — 관련은 `Refs: #12`, 완료는 `Closes #12`(GitHub 표준). ADR/FR 병기 — `Refs: #12, ADR-0004, FR-AC-04`. 그 외 `BREAKING CHANGE: ...`
 
 ## 커밋 단위 원칙
 
 - 한 커밋 = 한 관심사(one concern). 문서·기능·리팩터를 한 커밋에 섞지 않는다.
 - 단계별로 논리적으로 쪼개 이력을 남긴다. 예: 스캐폴드 → 결정(ADR) → 요구사항 → 설계.
-- 이 프로젝트는 추적성을 중시한다. 관련 ADR/FR ID를 footer의 `Refs:`에 남긴다.
+- **이슈 우선(ADR-0014)**: 모든 작업은 이슈에서 출발하고, 모든 커밋은 이슈에 연결한다(`Refs: #N` 또는 `Closes #N`). 이슈 없는 작업 금지(사소하면 `type:chore` 이슈).
+- 추적성을 위해 관련 ADR/FR ID도 footer에 병기한다.
 
 ## type 가이드
 
@@ -49,6 +50,7 @@ docs(adr): 카드 정산을 이체로 처리하는 결정 기록
 카드 이용내역을 지출의 단일 원천으로 삼고, 카드대금 인출은
 이체로 분류해 이중집계를 방지한다.
 
+Closes #12
 Refs: ADR-0004, FR-AC-04
 ```
 

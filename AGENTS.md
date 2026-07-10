@@ -42,8 +42,9 @@ backend/    서버(백업/복원) — Phase 2
 
 ## 커밋 규칙
 
-- `.claude/skills/commit-conventions` 를 따른다: `type(scope): subject` + 한국어 subject + `Refs: ADR-xxxx, FR-xxx` footer.
+- `.claude/skills/commit-conventions` 를 따른다: `type(scope): subject` + 한국어 subject + footer.
 - 한 커밋 = 한 관심사. 단계별로 쪼개 커밋.
+- **이슈 우선(ADR-0014)**: 모든 작업은 이슈에서 시작, 커밋 footer에 `Refs: #N` 또는 `Closes #N` 필수(ADR/FR 병기).
 
 ## 핵심 결정 (요약 · 전체 지도: `docs/decisions/README.md`)
 

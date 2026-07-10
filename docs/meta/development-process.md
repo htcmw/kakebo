@@ -31,7 +31,8 @@ Inception(비전·요구사항·유저스토리) → Construction(아키텍처·
 ## 5. 버전관리·커밋
 
 - 한 커밋 = 한 관심사, 단계별 커밋. 규칙: [`.claude/skills/commit-conventions`](../../.claude/skills/commit-conventions/SKILL.md).
-- 형식 `type(scope): subject` + `Refs: ADR-xxxx, FR-xxx`.
+- 형식 `type(scope): subject` + footer.
+- **이슈 우선(ADR-0014)**: 모든 작업은 이슈에서 출발, 커밋·PR·브랜치를 이슈에 연결(`Refs: #N`/`Closes #N`). ADR/FR도 병기.
 
 ## 6. 검증
 
