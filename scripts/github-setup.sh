@@ -76,11 +76,12 @@ echo "▶ 시드 이슈 생성..."
 ISSUE_URLS=()
 mkissue() { # title, milestone, labels(csv), body
   local title="$1" ms="$2" labels="$3" body="$4"
-  if gh issue list --search "$title in:title" --state all --json title -q '.[].title' | grep -qxF "$title"; then
-    echo "  · (건너뜀) $title"; return
-  fi
+  local existing
+  existing=$(gh issue list --search "$title in:title" --state all --json title,url \
+             -q ".[] | select(.title==\"$title\") | .url" | head -1)
+  if [ -n "$existing" ]; then echo "  · (있음) $title"; ISSUE_URLS+=("$existing"); return; fi
   local url
-  url=$(gh issue create --title "$title" --milestone "$ms" --label "$labels" --body "$body" 2>/dev/null)
+  url=$(gh issue create --title "$title" --milestone "$ms" --label "$labels" --body "$body")
   [ -n "$url" ] && { echo "  · $title"; ISSUE_URLS+=("$url"); }
 }
 
@@ -113,13 +114,23 @@ mkissue "모바일 반응형 화면 설계" "Bolt 2 — 거래·분류" "type:de
 # 4) Projects(v2) 보드 (작업 현황) — best-effort (project 권한 필요)
 # ---------------------------------------------------------------------------
 echo "▶ Project 보드..."
-PROJ_NUM=$(gh project create --owner "$OWNER" --title "kakebo" --format json -q .number 2>/dev/null)
-if [ -n "${PROJ_NUM:-}" ]; then
-  echo "  · Project #$PROJ_NUM 생성 (Todo/In Progress/In Review/Done 컬럼은 보드에서 설정)"
-  for u in "${ISSUE_URLS[@]}"; do gh project item-add "$PROJ_NUM" --owner "$OWNER" --url "$u" >/dev/null 2>&1; done
-  echo "  · 생성된 이슈 ${#ISSUE_URLS[@]}건을 보드에 추가"
+# 기존 'kakebo' 프로젝트가 있으면 재사용, 없으면 생성 (@me = 개인 계정)
+PROJ_NUM=$(gh project list --owner "@me" --format json \
+           -q '.projects[] | select(.title=="kakebo") | .number' 2>/dev/null | head -1)
+if [ -z "${PROJ_NUM:-}" ]; then
+  PROJ_NUM=$(gh project create --owner "@me" --title "kakebo" --format json -q .number)
+  echo "  · Project #$PROJ_NUM 생성"
 else
-  echo "  · (건너뜀) project 권한이 없거나 이미 있음. 'gh auth refresh -s project' 후 재시도하거나 웹에서 New project."
+  echo "  · Project #$PROJ_NUM 재사용"
+fi
+if [ -n "${PROJ_NUM:-}" ]; then
+  n=0
+  for u in "${ISSUE_URLS[@]}"; do
+    gh project item-add "$PROJ_NUM" --owner "@me" --url "$u" >/dev/null 2>&1 && n=$((n+1))
+  done
+  echo "  · 이슈 ${n}건 보드에 추가 (Board/Roadmap View는 프로젝트에서 New view로 추가)"
+else
+  echo "  · ✗ 프로젝트 생성 실패 — 위 에러 확인"
 fi
 
 echo "✅ 완료. Issues·Milestones·(선택)Project 보드가 세팅됐습니다."
