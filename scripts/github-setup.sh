@@ -124,6 +124,9 @@ else
   echo "  · Project #$PROJ_NUM 재사용"
 fi
 if [ -n "${PROJ_NUM:-}" ]; then
+  # repo에 연결 (레포 Projects 탭에 표시)
+  gh project link "$PROJ_NUM" --owner "@me" --repo "$REPO" >/dev/null 2>&1 \
+    && echo "  · repo($REPO)에 프로젝트 연결" || echo "  · (repo 연결 실패/이미 연결됨)"
   n=0
   for u in "${ISSUE_URLS[@]}"; do
     gh project item-add "$PROJ_NUM" --owner "@me" --url "$u" >/dev/null 2>&1 && n=$((n+1))
