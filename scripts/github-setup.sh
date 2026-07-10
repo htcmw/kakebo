@@ -77,7 +77,8 @@ ISSUE_URLS=()
 mkissue() { # title, milestone, labels(csv), body
   local title="$1" ms="$2" labels="$3" body="$4"
   local existing
-  existing=$(gh issue list --search "$title in:title" --state all --json title,url \
+  # 특수문자 제목의 검색 누락을 피하려고 전체 목록에서 정확 매칭
+  existing=$(gh issue list --state all --limit 300 --json title,url \
              -q ".[] | select(.title==\"$title\") | .url" | head -1)
   if [ -n "$existing" ]; then echo "  · (있음) $title"; ISSUE_URLS+=("$existing"); return; fi
   local url
@@ -125,8 +126,8 @@ else
 fi
 if [ -n "${PROJ_NUM:-}" ]; then
   # repo에 연결 (레포 Projects 탭에 표시)
-  gh project link "$PROJ_NUM" --owner "@me" --repo "$REPO" >/dev/null 2>&1 \
-    && echo "  · repo($REPO)에 프로젝트 연결" || echo "  · (repo 연결 실패/이미 연결됨)"
+  gh project link "$PROJ_NUM" --owner "@me" --repo "${REPO##*/}" \
+    && echo "  · repo(${REPO##*/})에 연결" || echo "  · repo 연결 실패(위 에러 참고, 또는 웹에서 연결)"
   n=0
   for u in "${ISSUE_URLS[@]}"; do
     gh project item-add "$PROJ_NUM" --owner "@me" --url "$u" >/dev/null 2>&1 && n=$((n+1))
