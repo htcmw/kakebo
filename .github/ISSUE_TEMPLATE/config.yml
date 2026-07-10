@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 결정(ADR)이 필요한 사안
+    url: https://github.com/htcmw/kakebo/tree/main/docs/decisions
+    about: 아키텍처·제품 결정은 이슈가 아니라 docs/decisions의 ADR로 남깁니다.

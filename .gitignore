@@ -1,0 +1,32 @@
+# --- Node / JS ---
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- Expo / React Native ---
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.tsbuildinfo
+
+# --- 환경/비밀 ---
+.env
+.env.*
+!.env.example
+
+# --- 로컬 데이터/백업 (로컬 우선: 개인 금융 데이터 커밋 금지) ---
+*.sqlite
+*.sqlite3
+*.db
+/backups/
+/sample-data/     # 실제 은행/카드 export 파일은 커밋하지 않음
+
+# --- OS / 에디터 ---
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json

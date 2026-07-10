@@ -25,6 +25,7 @@
 | 2026-07 | UI/UX 디자인 역할 `ui-ux-designer` 추가(designs/ 담당) | `.claude/agents/ui-ux-designer.md` |
 | 2026-07 | 역할별 결과물 체크리스트(백로그) 작성 | `meta/role-deliverables.md` |
 | 2026-07 | 유저 플로우·정보구조(IA) 작성(ui-ux-designer) | `designs/user-flows.md`, `designs/information-architecture.md` |
+| 2026-07 | GitHub 프로젝트 관리 세팅 — 로드맵·이슈/PR 템플릿·라벨·gh 자동 세팅 스크립트 | `ROADMAP.md`, `.github/`, `scripts/github-setup.sh`, `github-workflow.md` |
 
 > 이 로그는 요약이다. 각 결정의 맥락·근거·결과는 해당 ADR을, 변경 단위는 git 커밋(컨벤션 `Refs:`)을 본다.
 
