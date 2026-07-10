@@ -8,6 +8,18 @@
 # 멱등성: 이미 있는 항목은 건너뛰거나 갱신(--force)한다. 다시 돌려도 안전.
 set -uo pipefail
 
+# --- 사전 점검: gh 설치·로그인 ---
+if ! command -v gh >/dev/null 2>&1; then
+  echo "✗ gh(GitHub CLI)가 설치돼 있지 않습니다."
+  echo "  설치: brew install gh   (또는 https://cli.github.com)"
+  echo "  그다음: gh auth login  &&  gh auth refresh -s project,repo"
+  exit 1
+fi
+if ! gh auth status >/dev/null 2>&1; then
+  echo "✗ gh 로그인이 필요합니다:  gh auth login"
+  exit 1
+fi
+
 REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
 OWNER=${REPO%%/*}
 echo "▶ 대상 레포: $REPO"
@@ -43,8 +55,11 @@ mklabel "phase:2"        "5319E7" "서버 백업/공유"
 # ---------------------------------------------------------------------------
 echo "▶ 마일스톤 생성..."
 mkmilestone() {
-  gh api "repos/$REPO/milestones" -f title="$1" -f description="$2" >/dev/null 2>&1 \
-    && echo "  · $1" || echo "  · $1 (이미 있음/건너뜀)"
+  if gh api "repos/$REPO/milestones?state=all" -q '.[].title' 2>/dev/null | grep -qxF "$1"; then
+    echo "  · $1 (이미 있음)"; return
+  fi
+  gh api --method POST "repos/$REPO/milestones" -f title="$1" -f description="$2" >/dev/null 2>&1 \
+    && echo "  · $1 (생성)" || echo "  · $1 (실패)"
 }
 mkmilestone "Bolt 0 — 기반"          "Expo 스캐폴드 · 로컬 SQLite · 요구사항 baseline"
 mkmilestone "Bolt 1 — Import 코어"   "1개 기관 CSV → 정규화 → 저장 → 목록 (수직 슬라이스)"
