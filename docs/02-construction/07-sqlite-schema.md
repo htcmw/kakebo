@@ -8,7 +8,7 @@
 | 상태 | 🟢 확정 |
 | 이슈 | #25 (SQLite 스키마 DDL 확정) |
 | 선행 | [데이터 모델](02-data-model.md), [이체 매칭](03-transfer-matching.md), [계좌·카드 요구사항](../01-inception/02a-requirements-accounts-cards.md) |
-| 근거 ADR | 0004·0005·0006·0007, 0011(Expo/expo-sqlite), 0013(오픈·무료) |
+| 근거 ADR | **0015(금액·통화 표현, 정본 결정)**, 0004·0005·0006·0007, 0011(Expo/expo-sqlite), 0013(오픈·무료) |
 
 논리 데이터 모델(02-data-model.md)을 **로컬 SQLite 물리 스키마**로 확정한 정본. 구현체는 **Drizzle ORM**(`frontend/db/schema.ts`)이며, 이 문서는 그 **타입 매핑·불변식·결정 근거**를 서술한다.
 
@@ -43,7 +43,7 @@ SQLite엔 uuid·enum·array·numeric·timestamptz·bool 타입이 없어 전부 
 
 ## 2. 금액·통화·라운딩 (핵심 결정)
 
-> 결정 맥락: 앱은 한화가 기본이나 **해외결제(USD 등)** 가 발생한다. "달러로 얼마, 한화로 얼마 나갔는지" 둘 다 남기되, 집계는 단순하게 유지하고, **라운딩은 숨기지 않는다.**
+> 결정 맥락: 앱은 한화가 기본이나 **해외결제(USD 등)** 가 발생한다. "달러로 얼마, 한화로 얼마 나갔는지" 둘 다 남기되, 집계는 단순하게 유지하고, **라운딩은 숨기지 않는다.** 이 절의 결정 정본은 **[ADR-0015](../decisions/02-finance-logic/adr-0015-money-currency-representation.md)** 이며, 이 문서는 그 물리 구현이다.
 
 ### 2.1 최소단위 정수 저장
 모든 금액은 **해당 통화의 최소단위(minor unit) `integer`** 로 저장한다.
