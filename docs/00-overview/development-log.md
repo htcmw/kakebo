@@ -28,6 +28,7 @@
 | 2026-07 | GitHub 프로젝트 관리 세팅 — 로드맵·이슈/PR 템플릿·라벨·gh 자동 세팅 스크립트 | `ROADMAP.md`, `.github/`, `scripts/github-setup.sh`, `github-workflow.md` |
 | 2026-07 | 이슈 우선 정책 채택 — 모든 작업을 이슈에 연결(커밋 `Refs:/Closes #N`) | ADR-0014 |
 | 2026-07-16 | **SQLite 물리 스키마 확정**(#25) — Drizzle, 금액=최소단위 정수 + 통화 3필드(null 없음) + 라운딩 적시 | `07-sqlite-schema.md`, `frontend/db/schema.ts`, ADR-0015 |
+| 2026-07-16 | **기능–ADR 추적성 규칙 채택** — 기능(FR)=ADR 1:1 지향 + 파기 규칙(교차관심·진화·분할) | ADR-0016 |
 
 > 이 로그는 요약이다. 각 결정의 맥락·근거·결과는 해당 ADR을, 변경 단위는 git 커밋(컨벤션 `Refs:`)을 본다.
 
