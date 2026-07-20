@@ -27,3 +27,11 @@ expoDb.execSync('PRAGMA foreign_keys = ON;');
 export const db = drizzle(expoDb, { schema });
 
 export type DB = typeof db;
+
+/**
+ * DB 준비 게이트. 네이티브는 동기 open 이라 이미 준비 완료 → 즉시 resolve.
+ * (웹 client.web.ts 는 wasm 예열이 필요해 실제 비동기 작업을 수행한다.)
+ */
+export function ensureDbReady(): Promise<void> {
+  return Promise.resolve();
+}

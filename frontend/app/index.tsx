@@ -1,20 +1,28 @@
 /**
- * 동작 확인용 최소 홈 화면 (#26).
- *  - 로컬 SQLite 가 열리고 마이그레이션이 적용됐음을 화면에 표시.
+ * 동작 확인용 최소 홈 화면 (#26 · #35).
+ *  - 로컬 SQLite 가 열리고 마이그레이션이 적용됐음을 화면에 표시(네이티브·웹 공통).
  *  - 실제 기능 화면은 후속 이슈. NativeWind 유틸리티가 렌더됨을 겸사 확인.
+ *
+ * 웹 주의(#35): expo-sqlite ~57 웹의 "동기" 워커 채널은 결과 직렬화 길이를
+ * 1바이트로 잘못 기록하는 상한 버그가 있어, 결과가 ≥256B 인 SELECT 는 웹에서
+ * "Unexpected end of JSON input" 로 깨진다(쓰기·마이그레이션·작은 count 는 안전).
+ * → 헤드라인 카운트는 작은 count 쿼리로 확정(웹에서도 안전),
+ *   테이블/뷰 "이름 목록"은 큰 결과라 best-effort(웹에선 비어도 무방).
  */
 import { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { count } from 'drizzle-orm';
+import { count, sql } from 'drizzle-orm';
 
-import { db, DB_NAME, expoDb } from '@/db/client';
+import { db, DB_NAME } from '@/db/client';
 import { households } from '@/db/schema';
 
 type DbState = {
-  tables: string[];
-  views: string[];
+  tableCount: number;
+  viewCount: number;
   households: number;
+  tableNames: string[];
+  viewNames: string[];
 };
 
 export default function Home() {
@@ -23,19 +31,40 @@ export default function Home() {
 
   useEffect(() => {
     try {
-      const objects = expoDb.getAllSync<{ name: string; type: string }>(
-        "SELECT name, type FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%' AND name <> '__drizzle_migrations' ORDER BY name;",
-      );
+      // 작은 결과(count) — 네이티브·웹 모두 안전.
+      const tableCount =
+        db.get<{ c: number }>(
+          sql`SELECT count(*) AS c FROM sqlite_master
+              WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
+                AND name <> '__drizzle_migrations'`,
+        )?.c ?? 0;
+      const viewCount =
+        db.get<{ c: number }>(
+          sql`SELECT count(*) AS c FROM sqlite_master WHERE type = 'view'`,
+        )?.c ?? 0;
       const [{ value: householdCount }] = db
         .select({ value: count() })
         .from(households)
         .all();
 
-      setState({
-        tables: objects.filter((o) => o.type === 'table').map((o) => o.name),
-        views: objects.filter((o) => o.type === 'view').map((o) => o.name),
-        households: householdCount,
-      });
+      // 큰 결과(이름 목록) — 웹 동기 상한 버그를 피하려 best-effort.
+      let tableNames: string[] = [];
+      let viewNames: string[] = [];
+      try {
+        const objects = db.all<{ name: string; type: string }>(
+          sql`SELECT name, type FROM sqlite_master
+              WHERE type IN ('table','view')
+                AND name NOT LIKE 'sqlite_%'
+                AND name <> '__drizzle_migrations'
+              ORDER BY name`,
+        );
+        tableNames = objects.filter((o) => o.type === 'table').map((o) => o.name);
+        viewNames = objects.filter((o) => o.type === 'view').map((o) => o.name);
+      } catch {
+        // 웹: 큰 결과 직렬화 상한 → 이름 목록 생략(카운트로 충분).
+      }
+
+      setState({ tableCount, viewCount, households: householdCount, tableNames, viewNames });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
@@ -68,36 +97,38 @@ export default function Home() {
           <>
             <View className="rounded-2xl border border-primary/30 bg-primary-soft p-5">
               <Text className="text-base font-extrabold text-primary-dark">
-                DB ready — {state.tables.length} tables · {state.views.length} view
+                DB ready — {state.tableCount} tables · {state.viewCount} view
               </Text>
               <Text className="mt-1 text-sm text-primary-dark/80">
                 {DB_NAME} · households {state.households}건
               </Text>
             </View>
 
-            <View className="rounded-2xl border border-border bg-surface p-5">
-              <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-3">
-                Tables
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {state.tables.map((t) => (
-                  <View key={t} className="rounded-lg bg-canvas px-3 py-1.5">
-                    <Text className="text-[13px] font-semibold text-ink-2">{t}</Text>
-                  </View>
-                ))}
-              </View>
+            {state.tableNames.length > 0 && (
+              <View className="rounded-2xl border border-border bg-surface p-5">
+                <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-3">
+                  Tables
+                </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  {state.tableNames.map((t) => (
+                    <View key={t} className="rounded-lg bg-canvas px-3 py-1.5">
+                      <Text className="text-[13px] font-semibold text-ink-2">{t}</Text>
+                    </View>
+                  ))}
+                </View>
 
-              <Text className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">
-                Views
-              </Text>
-              <View className="flex-row flex-wrap gap-2">
-                {state.views.map((v) => (
-                  <View key={v} className="rounded-lg bg-primary-soft px-3 py-1.5">
-                    <Text className="text-[13px] font-semibold text-primary-dark">{v}</Text>
-                  </View>
-                ))}
+                <Text className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">
+                  Views
+                </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  {state.viewNames.map((v) => (
+                    <View key={v} className="rounded-lg bg-primary-soft px-3 py-1.5">
+                      <Text className="text-[13px] font-semibold text-primary-dark">{v}</Text>
+                    </View>
+                  ))}
+                </View>
               </View>
-            </View>
+            )}
           </>
         )}
       </ScrollView>
