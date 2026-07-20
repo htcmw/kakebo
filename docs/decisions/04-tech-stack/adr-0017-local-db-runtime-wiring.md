@@ -29,8 +29,9 @@
 ## 결과 (Consequences)
 
 - (+) 네이티브(iOS/Android)에서 로컬 SQLite가 즉시 동작하고 마이그레이션이 자동 적용된다.
-- (−) **웹에서는 DB가 열리지 않는다**(스코프 밖). 웹 데모는 후속 배선 전까지 제한.
-- (→) **후속 이슈**: 웹(OPFS) 드라이버 배선 + `client.web.ts` 플랫폼 분기. 완료 시 ADR-0011 웹 동일성 충족.
+- (+) **웹(OPFS)도 배선 완료(#35)** — `client.web.ts` + metro(wasm) + COOP/COEP 헤더로 브라우저에서 로컬 SQLite가 OPFS에 영속. **ADR-0011 웹 동일성 충족.**
+- (−) **웹 배포 제약**: 정적 export 호스팅이 `COOP: same-origin` + `COEP: require-corp` 두 헤더를 서빙해야 웹 SQLite 동기 API가 동작(후속 배포 이슈).
+- (−) **upstream 버그(expo-sqlite ~57.0.1 웹)**: 동기 워커 채널의 결과 길이 인코딩 결함으로 **직렬화 ≥256B인 SELECT가 웹에서 깨진다**(쓰기·마이그레이션·소량 count는 안전). 홈 화면은 count 기반으로 회피. 실기능(거래 목록 등) 전 방침 결정 필요 → 별도 이슈.
 
 ## 관련 문서
 
@@ -40,3 +41,4 @@
 ## 변경 이력
 
 - **v0.1 (2026-07-16)**: 최초. #26 스캐폴드에서 로컬 DB 런타임 배선(expo-sqlite 네이티브 + `useMigrations` + `v_ledger`) 확정, 웹 OPFS는 후속으로 분리.
+- **v0.2 (2026-07-20)**: 웹(OPFS) 배선 완료(#35) — metro wasm + COOP/COEP 헤더 + `client.web.ts`(async 예열 후 동기 핸들). 브라우저에서 "DB ready — 12 tables · 1 view"·OPFS 영속 확인. ADR-0011 웹 동일성 충족. 신규 제약 2건(배포 헤더·upstream 웹 SELECT 버그) 기록.

@@ -30,6 +30,7 @@
 | 2026-07-16 | **SQLite 물리 스키마 확정**(#25) — Drizzle, 금액=최소단위 정수 + 통화 3필드(null 없음) + 라운딩 적시 | `07-sqlite-schema.md`, `frontend/db/schema.ts`, ADR-0015 |
 | 2026-07-16 | **기능–ADR 추적성 규칙 채택** — 기능(FR)=ADR 1:1 지향 + 파기 규칙(교차관심·진화·분할) | ADR-0016 |
 | 2026-07-16 | **Expo 앱 스캐폴드**(#26) — TS·Router·NativeWind, Drizzle 배선(expo-sqlite 네이티브 + useMigrations + v_ledger). 웹 OPFS 후속 | `frontend/`, ADR-0017 |
+| 2026-07-20 | **웹(OPFS) SQLite 배선 완료**(#35) — metro wasm + COOP/COEP + client.web.ts. 데스크톱 브라우저에서 DB ready 확인. ADR-0011 웹 동일성 충족 | `frontend/`, ADR-0017 v0.2 |
 
 > 이 로그는 요약이다. 각 결정의 맥락·근거·결과는 해당 ADR을, 변경 단위는 git 커밋(컨벤션 `Refs:`)을 본다.
 
