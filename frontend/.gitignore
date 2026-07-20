@@ -1,0 +1,18 @@
+# 루트 .gitignore 가 node_modules/.expo/dist/web-build/*.tsbuildinfo/*.db 등은 이미 무시.
+# 여기엔 Expo 앱 디렉터리 전용 추가분만 둔다.
+
+# Expo 생성 타입/헬스체크
+expo-env.d.ts
+.metro-health-check*
+
+# 생성되는 네이티브 프로젝트 (prebuild 산출물)
+/ios
+/android
+.kotlin/
+
+# 서명 키/프로비저닝
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
