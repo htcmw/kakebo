@@ -32,6 +32,7 @@
 | 2026-07-16 | **Expo 앱 스캐폴드**(#26) — TS·Router·NativeWind, Drizzle 배선(expo-sqlite 네이티브 + useMigrations + v_ledger). 웹 OPFS 후속 | `frontend/`, ADR-0017 |
 | 2026-07-20 | **웹(OPFS) SQLite 배선 완료**(#35) — metro wasm + COOP/COEP + client.web.ts. 데스크톱 브라우저에서 DB ready 확인. ADR-0011 웹 동일성 충족 | `frontend/`, ADR-0017 v0.2 |
 | 2026-07-22 | **요구사항 baseline 재구성·동결**(#24) — v1.0 부재로 비전+02a+ADR 재구성, 인증·공유 Phase2 재조정, 로컬 2인 시드 확정 | `02-requirements.md` v1.1 |
+| 2026-07-22 | **웹 SELECT 버그 patch-package 수정**(#36) — expo-sqlite 웹 동기 채널 길이 인코딩(1→4바이트). 웹 대용량 SELECT 정상, 홈에 12테이블 목록 렌더 확인 | `patches/`, ADR-0018 |
 
 > 이 로그는 요약이다. 각 결정의 맥락·근거·결과는 해당 ADR을, 변경 단위는 git 커밋(컨벤션 `Refs:`)을 본다.
 
