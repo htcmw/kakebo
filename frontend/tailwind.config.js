@@ -2,7 +2,7 @@
  * Tailwind(NativeWind v4) 설정 — 디자인 토큰 매핑.
  *
  * 정본은 designs/design-tokens.md (출처: designs/ui-mockup.html :root).
- * 색·타이포·라운드·섀도를 목업 값 그대로 옮긴다(공동=teal, 지훈=blue, 서연=pink).
+ * 색·타이포·라운드·섀도를 목업 값 그대로 옮긴다(공동=teal, 규관=blue, 윤선=pink).
  * @type {import('tailwindcss').Config}
  */
 module.exports = {
@@ -17,8 +17,8 @@ module.exports = {
           dark: '#0b7a70',
           soft: '#e3f4f1',
         },
-        memberA: { DEFAULT: '#3b6ef6', soft: '#e7eefe' }, // 지훈
-        memberB: { DEFAULT: '#e0568f', soft: '#fce7f0' }, // 서연
+        memberA: { DEFAULT: '#3b6ef6', soft: '#e7eefe' }, // 규관
+        memberB: { DEFAULT: '#e0568f', soft: '#fce7f0' }, // 윤선
         // 의미 · 상태
         income: '#0f9d58',
         expense: '#e04b4b',

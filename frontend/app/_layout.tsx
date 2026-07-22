@@ -14,6 +14,7 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 import { db, ensureDbReady } from '@/db/client';
+import { seedIfEmpty } from '@/db/seed';
 import migrations from '@/drizzle/migrations';
 
 function Gate({ label }: { label: string }) {
@@ -37,9 +38,24 @@ function Fail({ title, message }: { title: string; message: string }) {
 /** db 준비 후에만 마운트 — 여기서 db 는 항상 유효(웹 live binding 포함). */
 function Migrator() {
   const { success, error } = useMigrations(db, migrations);
+  const [seeded, setSeeded] = useState(false);
+  const [seedError, setSeedError] = useState<string | null>(null);
+
+  // 마이그레이션 성공 후 로컬 초기 시드(FR-HM-01, 멱등) — 한 번만.
+  useEffect(() => {
+    if (!success) return;
+    try {
+      seedIfEmpty(db);
+      setSeeded(true);
+    } catch (e) {
+      setSeedError(e instanceof Error ? e.message : String(e));
+    }
+  }, [success]);
 
   if (error) return <Fail title="DB 마이그레이션 실패" message={error.message} />;
   if (!success) return <Gate label="마이그레이션 적용 중…" />;
+  if (seedError) return <Fail title="초기 데이터 생성 실패" message={seedError} />;
+  if (!seeded) return <Gate label="초기 데이터 준비 중…" />;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
