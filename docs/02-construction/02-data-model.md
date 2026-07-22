@@ -43,7 +43,7 @@ Transaction ─ TransferLink ─ Transaction/Card   (이체 짝)
 | 필드 | 타입 | 비고 |
 | :-- | :-- | :-- |
 | id | uuid PK | |
-| name | text | 예: "지훈·서연네" |
+| name | text | 예: "규관·윤선네" |
 | created_at | timestamptz | |
 
 ### Member

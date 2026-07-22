@@ -21,12 +21,12 @@
 | primary | `#0d9488` | `primary` | **공동/브랜드** (teal) |
 | primary-dark | `#0b7a70` | `primary-dark` | primary 강조/텍스트 |
 | primary-soft | `#e3f4f1` | `primary-soft` | primary 배경 |
-| memberA | `#3b6ef6` | `memberA` | **멤버 A(지훈)** (blue) |
+| memberA | `#3b6ef6` | `memberA` | **멤버 A(규관)** (blue) |
 | memberA-soft | `#e7eefe` | `memberA-soft` | A 배경 |
-| memberB | `#e0568f` | `memberB` | **멤버 B(서연)** (pink) |
+| memberB | `#e0568f` | `memberB` | **멤버 B(윤선)** (pink) |
 | memberB-soft | `#fce7f0` | `memberB-soft` | B 배경 |
 
-> 공동=teal, 지훈=blue, 서연=pink 는 앱 전반의 **의미 고정 색**(거래 공동/개인 태깅, 분담 등).
+> 공동=teal, 규관=blue, 윤선=pink 는 앱 전반의 **의미 고정 색**(거래 공동/개인 태깅, 분담 등).
 
 ### 의미(Semantic) · 상태
 | 토큰 | HEX | NativeWind | 의미 |
