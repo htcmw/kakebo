@@ -34,6 +34,7 @@
 | 2026-07-22 | **요구사항 baseline 재구성·동결**(#24) — v1.0 부재로 비전+02a+ADR 재구성, 인증·공유 Phase2 재조정, 로컬 2인 시드 확정 | `02-requirements.md` v1.1 |
 | 2026-07-22 | **웹 SELECT 버그 patch-package 수정**(#36) — expo-sqlite 웹 동기 채널 길이 인코딩(1→4바이트). 웹 대용량 SELECT 정상, 홈에 12테이블 목록 렌더 확인 | `patches/`, ADR-0018 |
 | 2026-07-22 | **FR-HM-01 로컬 가계·2인 시드**(#37) — 최초 실행 시 가계 1 + 멤버 2(규관·윤선) 멱등 생성. 홈에 렌더 확인. 플레이스홀더(지훈·서연)→실명 반영 | `frontend/db/seed.ts`, `02-requirements.md` v1.1.1 |
+| 2026-07-22 | **Bolt 1 착수 · import 업로드 UI**(#28) — CSV/XLS/XLSX 선택(expo-document-picker), 확장자·10MB 검증, /import 라우트. 파싱은 #29 | `frontend/app/import.tsx`, `lib/import/file.ts` |
 
 > 이 로그는 요약이다. 각 결정의 맥락·근거·결과는 해당 ADR을, 변경 단위는 git 커밋(컨벤션 `Refs:`)을 본다.
 

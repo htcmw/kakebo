@@ -5,8 +5,9 @@
  *  - 실제 기능 화면(거래·대시보드 등)은 후속 이슈(Bolt 1~).
  */
 import { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 
 import { db, DB_NAME } from '@/db/client';
 import { households, members } from '@/db/schema';
@@ -21,6 +22,7 @@ const MEMBER_CHIP = ['bg-memberA-soft', 'bg-memberB-soft'];
 const MEMBER_TEXT = ['text-memberA', 'text-memberB'];
 
 export default function Home() {
+  const router = useRouter();
   const [data, setData] = useState<HomeData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,6 +88,21 @@ export default function Home() {
                 멤버 {data.members.length}명 · 공동/개인 태깅 기준(FR-SH)
               </Text>
             </View>
+
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="거래 가져오기"
+              onPress={() => router.push('/import')}
+              className="flex-row items-center justify-between rounded-card bg-primary px-5 py-4 active:opacity-90"
+            >
+              <View>
+                <Text className="text-body font-bold text-white">거래 가져오기</Text>
+                <Text className="mt-0.5 text-caption text-white/80">
+                  은행·카드 CSV/엑셀 올리기 (FR-IM-01)
+                </Text>
+              </View>
+              <Text className="text-lg font-extrabold text-white">→</Text>
+            </Pressable>
 
             <Text className="px-1 text-caption text-ink-3">
               로컬 SQLite · {DB_NAME} · 무인증(로컬 우선)

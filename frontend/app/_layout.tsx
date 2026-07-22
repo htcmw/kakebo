@@ -60,6 +60,11 @@ function Migrator() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
+      {/* 가져오기: 뒤로가기 위해 헤더 표시(#28) */}
+      <Stack.Screen
+        name="import"
+        options={{ headerShown: true, title: '가져오기', headerBackTitle: '홈' }}
+      />
     </Stack>
   );
 }
