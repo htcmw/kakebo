@@ -1,0 +1,18 @@
+diff --git a/node_modules/expo-sqlite/web/WorkerChannel.ts b/node_modules/expo-sqlite/web/WorkerChannel.ts
+index 7fba380..64d4e9d 100644
+--- a/node_modules/expo-sqlite/web/WorkerChannel.ts
++++ b/node_modules/expo-sqlite/web/WorkerChannel.ts
+@@ -40,7 +40,12 @@ export function sendWorkerResult({
+     const resultJson = error != null ? serialize({ error }) : serialize({ result });
+     const resultBytes = new TextEncoder().encode(resultJson);
+     const length = resultBytes.length;
+-    resultArray.set(new Uint32Array([length]), 0);
++    // patch(#36): write the 32-bit length as 4 bytes, matching the reader
++    // (`new Uint32Array(resultArray.buffer, 0, 1)[0]`). The original
++    // `resultArray.set(new Uint32Array([length]), 0)` copies element-wise into a
++    // Uint8Array, storing only 1 byte -> any result >=256B is truncated and the
++    // reader throws "Unexpected end of JSON input".
++    new Uint32Array(resultArray.buffer, 0, 1)[0] = length;
+     resultArray.set(resultBytes, 4);
+     Atomics.store(lock, 0, RESOLVED);
+   } else {
