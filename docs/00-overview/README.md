@@ -22,8 +22,8 @@ docs/
 | 문서 | 위치 | 상태 |
 | :-- | :-- | :-- |
 | 제품 비전서 | (레포 미포함) | ✅ 확정 v0.2 · 드라이브 확정본 |
-| 요구사항 명세 (재구성 baseline) | `01-inception/02-requirements.md` | 🟡 초안(재구성) v1.1 · 검토 후 동결 대기 (#24). v1.0 원본 부재 |
-| 요구사항 델타 — 계좌·카드·이체·할부 | `01-inception/02a-requirements-accounts-cards.md` | 🟢 신규 — v1.1(02)로 통합됨, 이력 보존 |
+| 요구사항 명세 (재구성 baseline) | `01-inception/02-requirements.md` | 🟢 확정(동결) v1.1 · 2026-07-22 (#24). v1.0 원본 부재로 재구성 |
+| 요구사항 델타 — 계좌·카드·이체·할부 | `01-inception/02a-requirements-accounts-cards.md` | 🔵 v1.1(02)로 통합됨 · 이력 보존 |
 | 아키텍처 (로컬 우선) | `02-construction/01-architecture.md` | 🟡 초안 |
 | 데이터 모델 | `02-construction/02-data-model.md` | 🟡 초안 |
 | 이체 매칭 규칙 (내부/외부 판별) | `02-construction/03-transfer-matching.md` | 🟡 초안 |
